@@ -1,5 +1,6 @@
 package android.example.ohiouniversityspectrometerdatacollection;
 
+import android.app.AlertDialog;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.DialogFragment;
@@ -8,9 +9,11 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
 
 public class MainActivity extends AppCompatActivity {
     // Debug
@@ -49,8 +52,8 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.bluetooth_connection_menu:
-                DialogFragment dialogFragment= new BluetoothDevicesDialogFragment();
-                dialogFragment.show(getSupportFragmentManager(), "BTDevices");
+                DialogFragment dialog = new BluetoothDevicesDialogFragment();
+                dialog.show(getSupportFragmentManager(), "BluetoothDevices");
                 return true;
         }
         return false;

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+    android:id="@+id/dialog_cancel"
+    android:title="@string/dialog_cancel"/>
+    <item
+        android:id="@+id/dialog_scan"
+        android:title="@string/dialog_scan"/>
+    <item
+        android:id="@+id/dialog_confirm"
+        android:title="@string/dialog_confirm"/>
+
+</menu>

@@ -2,6 +2,7 @@ package android.example.ohiouniversityspectrometerdatacollection;
 
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBar;
@@ -42,6 +43,17 @@ public class MainActivity extends AppCompatActivity {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.menu_main, menu);
         return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.bluetooth_connection_menu:
+                DialogFragment dialogFragment= new BluetoothDevicesDialogFragment();
+                dialogFragment.show(getSupportFragmentManager(), "BTDevices");
+                return true;
+        }
+        return false;
     }
 
     private BottomNavigationView.OnNavigationItemSelectedListener navListener =

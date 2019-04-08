@@ -100,8 +100,6 @@ public class BluetoothDevicesDialogFragment extends DialogFragment {
     @Override
     public void onResume() {
         super.onResume();
-        mAdapter = new DeviceRecyclerViewAdapter(getContext(), mDevices);
-        mRecyclerView.setAdapter(mAdapter);
         // Register for broadcasts when a device is discovered
         IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
         mContext.registerReceiver(mReceiver, filter);
@@ -118,6 +116,7 @@ public class BluetoothDevicesDialogFragment extends DialogFragment {
                 // If it's already paired, skip it, because it's been listed already
                 if (device.getBondState() != BluetoothDevice.BOND_BONDED) {
                     mDevices.add(device);
+                    mAdapter.notifyDataSetChanged();
                     Log.d(TAG, "Discovery - Name: " + device.getName() + "  --- Address: " + device.getAddress());
                 }
             } else if (BluetoothAdapter.ACTION_DISCOVERY_FINISHED.equals(action)) {

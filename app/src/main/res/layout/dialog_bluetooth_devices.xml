@@ -11,7 +11,7 @@
         android:layout_height="wrap_content"
         android:id="@+id/dialog_title"
         android:text="@string/bluetooth_devices"
-        android:textSize="20sp"
+        android:textSize="25sp"
         android:textStyle="bold"
         android:layout_marginTop="5dp"
         />

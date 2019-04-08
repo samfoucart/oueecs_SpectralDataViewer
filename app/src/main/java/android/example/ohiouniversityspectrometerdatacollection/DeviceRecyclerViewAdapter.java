@@ -54,7 +54,11 @@ public class DeviceRecyclerViewAdapter extends RecyclerView.Adapter<DeviceRecycl
     public void onBindViewHolder(@NonNull final DeviceRecyclerViewAdapter.ViewHolder viewHolder, int i) {
         Log.d(TAG, "onBindViewHolder: called");
 
-        viewHolder.deviceName.setText(mDevices.get(i).getName());
+        if (mDevices.get(i).getName() == null) {
+            viewHolder.deviceName.setText(mDevices.get(i).getAddress());
+        } else {
+            viewHolder.deviceName.setText(mDevices.get(i).getName());
+        }
 
         viewHolder.parentLayout.setOnClickListener(new View.OnClickListener() {
             @Override

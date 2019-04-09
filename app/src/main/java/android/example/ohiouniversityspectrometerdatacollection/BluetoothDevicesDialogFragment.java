@@ -73,7 +73,10 @@ public class BluetoothDevicesDialogFragment extends DialogFragment {
             mBtAdapter.cancelDiscovery();
         }
 
-
+        Log.d(TAG, "onCreate");
+        // Register for broadcasts when a device is discovered
+        IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
+        mContext.registerReceiver(mReceiver, filter);
 
         mBtAdapter.startDiscovery();
 
@@ -97,13 +100,27 @@ public class BluetoothDevicesDialogFragment extends DialogFragment {
         mContext = context;
     }
 
+
     @Override
-    public void onResume() {
-        super.onResume();
-        // Register for broadcasts when a device is discovered
-        IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
-        mContext.registerReceiver(mReceiver, filter);
+    public void onPause() {
+        super.onPause();
+        if (mBtAdapter != null) {
+            mBtAdapter.cancelDiscovery();
+        }
     }
+
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (mBtAdapter != null) {
+            mBtAdapter.cancelDiscovery();
+        }
+        Log.d(TAG, "OnDestroy");
+
+        mContext.unregisterReceiver(mReceiver);
+    }
+
 
     private final BroadcastReceiver mReceiver = new BroadcastReceiver() {
         @Override
@@ -115,8 +132,10 @@ public class BluetoothDevicesDialogFragment extends DialogFragment {
                 BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
                 // If it's already paired, skip it, because it's been listed already
                 if (device.getBondState() != BluetoothDevice.BOND_BONDED) {
-                    mDevices.add(device);
-                    mAdapter.notifyDataSetChanged();
+                    if (device.getName() != null) {
+                        mDevices.add(device);
+                        mAdapter.notifyDataSetChanged();
+                    }
                     Log.d(TAG, "Discovery - Name: " + device.getName() + "  --- Address: " + device.getAddress());
                 }
             } else if (BluetoothAdapter.ACTION_DISCOVERY_FINISHED.equals(action)) {

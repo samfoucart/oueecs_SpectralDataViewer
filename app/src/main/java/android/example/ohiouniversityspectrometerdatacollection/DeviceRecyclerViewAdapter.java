@@ -1,5 +1,6 @@
 package android.example.ohiouniversityspectrometerdatacollection;
 
+import android.bluetooth.BluetoothClass;
 import android.bluetooth.BluetoothDevice;
 import android.content.Context;
 import android.support.annotation.NonNull;
@@ -15,23 +16,33 @@ import android.widget.Toast;
 import java.util.ArrayList;
 
 public class DeviceRecyclerViewAdapter extends RecyclerView.Adapter<DeviceRecyclerViewAdapter.ViewHolder>{
+    // Debug
     private static final String TAG = "DeviceRecyclerView";
 
+    // Member Fields
     private ArrayList<BluetoothDevice> mDevices;
     private Context mContext;
 
     // Provide a reference to the view for each data item
     // Complex data items may need more than one view per item, and
     // you provide access to all the views for a data item in a view holder
-    public class ViewHolder extends RecyclerView.ViewHolder {
+    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
         // each data item is just a string in this case
         TextView deviceName;
         RelativeLayout parentLayout;
+
 
         private ViewHolder(@NonNull View itemView) {
             super(itemView);
             deviceName = itemView.findViewById(R.id.device_name);
             parentLayout = itemView.findViewById(R.id.parent_layout);
+            itemView.setOnClickListener(this);
+        }
+
+        @Override
+        public void onClick(View v) {
+            Log.d(TAG, "onClick");
+            Toast.makeText(mContext ,mDevices.get(getAdapterPosition()).getName(), Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -59,24 +70,12 @@ public class DeviceRecyclerViewAdapter extends RecyclerView.Adapter<DeviceRecycl
         } else {
             viewHolder.deviceName.setText(mDevices.get(i).getName());
         }
-
-        viewHolder.parentLayout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Log.d(TAG, "onClick: item selected: "
-                        + mDevices.get(viewHolder.getAdapterPosition()).getName());
-
-                Toast.makeText(mContext,
-                        mDevices.get(viewHolder.getAdapterPosition()).getName(),
-                        Toast.LENGTH_SHORT).show();
-            }
-        });
     }
 
     @Override
     public int getItemCount() {
         return mDevices.size();
     }
-
+    
 
 }

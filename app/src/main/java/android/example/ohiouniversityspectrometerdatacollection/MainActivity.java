@@ -1,6 +1,7 @@
 package android.example.ohiouniversityspectrometerdatacollection;
 
 import android.app.AlertDialog;
+import android.bluetooth.BluetoothDevice;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.DialogFragment;
@@ -14,14 +15,16 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.TextView;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements BluetoothDevicesDialogFragment.DeviceDialogListener {
     // Debug
     private static final String TAG = "MainActivity";
 
     // Layout Views
     private BottomNavigationView mBottomNav;
     private ActionBar mToolBar;
+    private TextView mText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -99,5 +102,17 @@ public class MainActivity extends AppCompatActivity {
         // stack, so they removed that, and I'm not sure which to pick.
         // fragmentTransaction.addToBackStack(null);
         fragmentTransaction.commit();
+    }
+
+
+    @Override
+    public void updateActivity() {
+        Fragment currentFragment = getSupportFragmentManager().findFragmentById(R.id.fragment_container);
+        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+        if (currentFragment != null) {
+            fragmentTransaction.detach(currentFragment);
+            fragmentTransaction.attach(currentFragment);
+            fragmentTransaction.commit();
+        }
     }
 }

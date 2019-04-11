@@ -3,11 +3,11 @@ package android.example.ohiouniversityspectrometerdatacollection;
 import android.Manifest;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.arch.lifecycle.ViewModelProviders;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
@@ -22,14 +22,14 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
+
 
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Set;
 
-public class BluetoothDevicesDialogFragment extends DialogFragment {
+
+public class BluetoothDevicesDialogFragment extends DialogFragment implements DeviceRecyclerViewAdapter.OnDeviceListener {
     // Debug
     private static final String TAG = "BluetoothDevicesDialog";
 
@@ -38,9 +38,16 @@ public class BluetoothDevicesDialogFragment extends DialogFragment {
     private RecyclerView mRecyclerView;
     private DeviceRecyclerViewAdapter mAdapter;
     private Context mContext;
+    private DeviceViewModel mDeviceViewModel;
+    private DeviceDialogListener mListener;
 
     // Newly discovered devices
     private ArrayList<BluetoothDevice> mDevices;
+
+    public interface DeviceDialogListener {
+        public void updateActivity();
+    }
+
 
 
     @NonNull
@@ -84,8 +91,10 @@ public class BluetoothDevicesDialogFragment extends DialogFragment {
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
-        mAdapter = new DeviceRecyclerViewAdapter(getContext(), mDevices);
+        mAdapter = new DeviceRecyclerViewAdapter(getContext(), mDevices, this);
         mRecyclerView.setAdapter(mAdapter);
+
+        mDeviceViewModel = ViewModelProviders.of(getActivity()).get(DeviceViewModel.class);
 
 
         // Inflate and set the layout for the dialog
@@ -98,6 +107,7 @@ public class BluetoothDevicesDialogFragment extends DialogFragment {
     public void onAttach(Context context) {
         super.onAttach(context);
         mContext = context;
+        mListener = (DeviceDialogListener) context;
     }
 
 
@@ -143,4 +153,10 @@ public class BluetoothDevicesDialogFragment extends DialogFragment {
             }
         }
     };
+
+    @Override
+    public void onDeviceClick(BluetoothDevice device) {
+        mDeviceViewModel.select(device);
+        mListener.updateActivity();
+    }
 }

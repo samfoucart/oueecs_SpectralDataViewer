@@ -1,6 +1,7 @@
 package android.example.ohiouniversityspectrometerdatacollection;
 
-import android.bluetooth.BluetoothClass;
+import android.app.Activity;
+import android.arch.lifecycle.ViewModelProviders;
 import android.bluetooth.BluetoothDevice;
 import android.content.Context;
 import android.support.annotation.NonNull;
@@ -15,6 +16,8 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 
+import androidx.lifecycle.ViewModelProvider;
+
 public class DeviceRecyclerViewAdapter extends RecyclerView.Adapter<DeviceRecyclerViewAdapter.ViewHolder>{
     // Debug
     private static final String TAG = "DeviceRecyclerView";
@@ -22,6 +25,14 @@ public class DeviceRecyclerViewAdapter extends RecyclerView.Adapter<DeviceRecycl
     // Member Fields
     private ArrayList<BluetoothDevice> mDevices;
     private Context mContext;
+    private OnDeviceListener mOnDeviceListener;
+
+
+    public DeviceRecyclerViewAdapter(Context context, ArrayList<BluetoothDevice> devices, OnDeviceListener listener) {
+        mDevices = devices;
+        mContext = context;
+        mOnDeviceListener = listener;
+    }
 
     // Provide a reference to the view for each data item
     // Complex data items may need more than one view per item, and
@@ -30,12 +41,14 @@ public class DeviceRecyclerViewAdapter extends RecyclerView.Adapter<DeviceRecycl
         // each data item is just a string in this case
         TextView deviceName;
         RelativeLayout parentLayout;
+        OnDeviceListener onDeviceListener;
 
 
-        private ViewHolder(@NonNull View itemView) {
+        private ViewHolder(@NonNull View itemView, OnDeviceListener listener) {
             super(itemView);
             deviceName = itemView.findViewById(R.id.device_name);
             parentLayout = itemView.findViewById(R.id.parent_layout);
+            onDeviceListener = listener;
             itemView.setOnClickListener(this);
         }
 
@@ -43,12 +56,8 @@ public class DeviceRecyclerViewAdapter extends RecyclerView.Adapter<DeviceRecycl
         public void onClick(View v) {
             Log.d(TAG, "onClick");
             Toast.makeText(mContext ,mDevices.get(getAdapterPosition()).getName(), Toast.LENGTH_SHORT).show();
+            onDeviceListener.onDeviceClick(mDevices.get(getAdapterPosition()));
         }
-    }
-
-    public DeviceRecyclerViewAdapter(Context context, ArrayList<BluetoothDevice> devices) {
-        mDevices = devices;
-        mContext = context;
     }
 
     // Create new views (invoked by the layout manager
@@ -58,7 +67,7 @@ public class DeviceRecyclerViewAdapter extends RecyclerView.Adapter<DeviceRecycl
        // Create a new view
         View view = LayoutInflater.from(viewGroup.getContext())
                 .inflate(R.layout.layout_listitem, viewGroup, false);
-        return new ViewHolder(view);
+        return new ViewHolder(view, mOnDeviceListener);
     }
 
     @Override
@@ -70,12 +79,17 @@ public class DeviceRecyclerViewAdapter extends RecyclerView.Adapter<DeviceRecycl
         } else {
             viewHolder.deviceName.setText(mDevices.get(i).getName());
         }
+
     }
 
     @Override
     public int getItemCount() {
         return mDevices.size();
     }
-    
+
+    public interface OnDeviceListener{
+        void onDeviceClick(BluetoothDevice device);
+    }
+
 
 }

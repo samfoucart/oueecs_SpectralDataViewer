@@ -22,6 +22,8 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.github.mikephil.charting.data.Entry;
+
 
 public class SpectrometerSettingsFragment extends Fragment{
     // Debug
@@ -187,9 +189,21 @@ public class SpectrometerSettingsFragment extends Fragment{
                     break;
                 case Constants.MESSAGE_READ:
                     byte[] readBuf = (byte[]) msg.obj;
+                    mDeviceViewModel.clearEntries();
+                    /**
+                    for (int i = 0; i < readBuf.length; ++i) {
+                        mDeviceViewModel.addData(new Entry(i, readBuf[i]));
+                    }
+                     */
+
                     // construct a string from the valid bytes in the buffer
                     String readMessage = new String(readBuf, 0, msg.arg1);
-                    mText.setText(readMessage);
+                    String[] chartData = readMessage.split(" ");
+                    for (int i = 0; i < chartData.length; ++i) {
+                        mDeviceViewModel.addData(new Entry(i, Integer.parseInt(chartData[i])));
+                    }
+
+                    mText.setText("Data received and plotted.");
                     break;
                 case Constants.MESSAGE_DEVICE_NAME:
                     // save the connected device's name
@@ -199,8 +213,6 @@ public class SpectrometerSettingsFragment extends Fragment{
                                 Toast.LENGTH_SHORT).show();
                     }
                     break;
-
-
             }
         }
     };

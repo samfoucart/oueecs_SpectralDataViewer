@@ -1,10 +1,10 @@
 <resources>
     <string name="app_name">Ohio University Spectrometer Data Collection</string>
     <string name="connect_bluetooth">Connect to Bluetooth Device (Raspberry Pi)</string>
-    <string name="spectrometer_settings_title">Specifications</string>
+    <string name="spectrometer_settings_title">Parameters</string>
     <string name="saved_files_title">Files</string>
     <string name="graph_title">Graph</string>
-    <string name="toolbar_spectrometer_settings">Spectrometer Settings</string>
+    <string name="toolbar_spectrometer_settings">Spectrometer Parameters</string>
     <string name="bluetooth_device_blank_text">Bluetooth Device Blank Text</string>
     <string name="dialog_cancel">Cancel</string>
     <string name="dialog_scan">Scan</string>

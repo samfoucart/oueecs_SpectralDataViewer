@@ -1,7 +1,5 @@
 package android.example.ohiouniversityspectrometerdatacollection;
 
-import android.app.Activity;
-import android.arch.lifecycle.ViewModelProviders;
 import android.bluetooth.BluetoothDevice;
 import android.content.Context;
 import android.support.annotation.NonNull;
@@ -16,7 +14,6 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 
-import androidx.lifecycle.ViewModelProvider;
 
 public class DeviceRecyclerViewAdapter extends RecyclerView.Adapter<DeviceRecyclerViewAdapter.ViewHolder>{
     // Debug

@@ -45,7 +45,7 @@ public class BluetoothDevicesDialogFragment extends DialogFragment implements De
     private ArrayList<BluetoothDevice> mDevices;
 
     public interface DeviceDialogListener {
-        public void updateActivity();
+        void updateActivity();
     }
 
 

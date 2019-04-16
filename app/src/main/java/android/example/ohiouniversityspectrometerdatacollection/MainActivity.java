@@ -1,7 +1,7 @@
 package android.example.ohiouniversityspectrometerdatacollection;
 
-import android.app.AlertDialog;
-import android.bluetooth.BluetoothDevice;
+import android.bluetooth.BluetoothAdapter;
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.DialogFragment;
@@ -10,21 +10,25 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.TextView;
+import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity implements BluetoothDevicesDialogFragment.DeviceDialogListener {
-    // Debug
     private static final String TAG = "MainActivity";
+
+    // Intent request codes
+    private static final int REQUEST_ENABLE_BT = 1;
 
     // Layout Views
     private BottomNavigationView mBottomNav;
     private ActionBar mToolBar;
-    private TextView mText;
+
+    // Member Fields
+    private BluetoothAdapter mBluetoothAdapter;
+    private BluetoothService mBluetoothService;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,6 +46,7 @@ public class MainActivity extends AppCompatActivity implements BluetoothDevicesD
                 new SpectrometerSettingsFragment()).commit();
         // Set Toolbar title
         mToolBar.setTitle(R.string.toolbar_spectrometer_settings);
+
     }
 
     @Override

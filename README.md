@@ -6,9 +6,9 @@ To use the app, clone the repository and build it with Android Studio. The app i
 
 # Screenshots/Demos
 ## [EARLY Youtube Demonstration](https://www.youtube.com/watch?v=PTfK9BFuKY0)
-[Demo Parameters Entry](https://drive.google.com/open?id=1DcnOOVq47JpCfwisdSo6X4mdH2YxqXfk)
-[Demo Graphing](https://drive.google.com/open?id=1dmwvHeD-1LN7u4VRNMIo36eVYFVH-K5X)
-[Demo Device Selection](https://drive.google.com/open?id=1V-ZOr8NpywkSIg3lfYxT3DbuGQYfL-2K)
+![Demo Parameters Entry](https://drive.google.com/open?id=1DcnOOVq47JpCfwisdSo6X4mdH2YxqXfk)
+![Demo Graphing](https://drive.google.com/open?id=1dmwvHeD-1LN7u4VRNMIo36eVYFVH-K5X)
+![Demo Device Selection](https://drive.google.com/open?id=1V-ZOr8NpywkSIg3lfYxT3DbuGQYfL-2K)
 
 
 

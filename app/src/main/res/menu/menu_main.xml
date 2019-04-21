@@ -6,4 +6,6 @@
         android:icon="@drawable/ic_bluetooth_menu"
         android:title="@string/connect_bluetooth"
         app:showAsAction="ifRoom" />
+
+    
 </menu>

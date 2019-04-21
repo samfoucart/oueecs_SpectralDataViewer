@@ -45,7 +45,7 @@ public class BluetoothDevicesDialogFragment extends DialogFragment implements De
     private ArrayList<BluetoothDevice> mDevices;
 
     public interface DeviceDialogListener {
-        void updateActivity();
+        void deviceClick();
     }
 
 
@@ -157,6 +157,6 @@ public class BluetoothDevicesDialogFragment extends DialogFragment implements De
     @Override
     public void onDeviceClick(BluetoothDevice device) {
         mDeviceViewModel.select(device);
-        mListener.updateActivity();
+        mListener.deviceClick();
     }
 }

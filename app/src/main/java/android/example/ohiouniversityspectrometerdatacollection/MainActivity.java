@@ -1,11 +1,16 @@
 package android.example.ohiouniversityspectrometerdatacollection;
 
+import android.arch.lifecycle.ViewModelProviders;
 import android.bluetooth.BluetoothAdapter;
+import android.content.Context;
 import android.content.Intent;
+import android.os.Handler;
+import android.os.Message;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -14,9 +19,13 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
-public class MainActivity extends AppCompatActivity implements BluetoothDevicesDialogFragment.DeviceDialogListener {
+import com.github.mikephil.charting.data.Entry;
+
+public class MainActivity extends AppCompatActivity implements BluetoothDevicesDialogFragment.DeviceDialogListener, SpectrometerSettingsFragment.ParametersInterface {
     private static final String TAG = "MainActivity";
 
     // Intent request codes
@@ -25,10 +34,13 @@ public class MainActivity extends AppCompatActivity implements BluetoothDevicesD
     // Layout Views
     private BottomNavigationView mBottomNav;
     private ActionBar mToolBar;
+    private ProgressBar mProgressBar;
 
     // Member Fields
     private BluetoothAdapter mBluetoothAdapter;
     private BluetoothService mBluetoothService;
+    private DeviceViewModel mDeviceViewModel;
+    private StringBuffer mOutStringBuffer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,6 +51,7 @@ public class MainActivity extends AppCompatActivity implements BluetoothDevicesD
 
         // Setup Listener for bottom navigation bar
         mBottomNav = findViewById(R.id.bottom_navigation);
+        mProgressBar = findViewById(R.id.loading_bar);
         mBottomNav.setOnNavigationItemSelectedListener(navListener);
         // Open the Spectrometer Settings Fragment first
         mBottomNav.setSelectedItemId(R.id.nav_user_input);
@@ -47,6 +60,167 @@ public class MainActivity extends AppCompatActivity implements BluetoothDevicesD
         // Set Toolbar title
         mToolBar.setTitle(R.string.toolbar_spectrometer_settings);
 
+        // Get the local bluetooth adapter
+        mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+
+        // If the adapter is null, then Bluetooth is not supported
+        if (mBluetoothAdapter == null) {
+            Toast.makeText(this, "Bluetooth is not available on this device.", Toast.LENGTH_LONG).show();
+            this.finish();
+        }
+
+        mDeviceViewModel = ViewModelProviders.of(this).get(DeviceViewModel.class);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        // If Bluetooth is not on, request that it be enabled.
+        // setupChat() will then be called during onActivityResult
+        if (!mBluetoothAdapter.isEnabled()) {
+            Intent enableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+            startActivityForResult(enableIntent, REQUEST_ENABLE_BT);
+        } else if (mBluetoothService == null) {
+            setupCommunication();
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (mBluetoothService != null) {
+            mBluetoothService.stop();
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (mBluetoothService != null) {
+            if (mBluetoothService.getState() == BluetoothService.STATE_NONE) {
+                mBluetoothService.start();
+            }
+        }
+    }
+
+    private void setupCommunication() {
+        Log.d(TAG, "SetupCommunication()");
+
+        // Initialize the BluetoothService to perform bluetooth connections
+        mBluetoothService = new BluetoothService(this, mHandler);
+
+        // Initialize the buffer for outgoing messages
+        mOutStringBuffer = new StringBuffer("");
+
+
+        // Connect to device if it's selected
+        if (mDeviceViewModel.getSelected() != null &&
+                mBluetoothService.getState() != BluetoothService.STATE_CONNECTED) {
+            mBluetoothService.connect(mDeviceViewModel.getSelected(), false);
+            //mTestButton.setVisibility(View.VISIBLE);
+            //mTestEditText.setVisibility(View.VISIBLE);
+            /*
+            mTestButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    // Send a message using content of the edit text widget
+                    String information = mTestEditText.getText().toString();
+                    sendInformation(information);
+                }
+            });
+             */
+        }
+
+    }
+
+    private final Handler mHandler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            SpectrometerSettingsFragment parFrag = (SpectrometerSettingsFragment)
+                    getSupportFragmentManager().findFragmentById(R.id.fragment_user_input);
+            switch (msg.what) {
+                case Constants.MESSAGE_STATE_CHANGE:
+                    switch (msg.arg1) {
+                        case BluetoothService.STATE_CONNECTED:
+                            mDeviceViewModel.setConnected(true);
+                            mProgressBar.setVisibility(View.INVISIBLE);
+                            updateFragment();
+                            break;
+                        case BluetoothService.STATE_CONNECTING:
+                            mProgressBar.setVisibility(View.VISIBLE);
+
+                            break;
+                        case BluetoothService.STATE_LISTEN:
+                        case BluetoothService.STATE_NONE:
+                            //Toast.makeText(activity, "Error, Disconnected",
+                            // Toast.LENGTH_SHORT).show();
+                            mDeviceViewModel.setConnected(false);
+                            mProgressBar.setVisibility(View.INVISIBLE);
+                            updateFragment();
+                            break;
+                    }
+                    break;
+                case Constants.MESSAGE_WRITE:
+                    byte[] writeBuf = (byte[]) msg.obj;
+                    // construct a string from the buffer
+                    String writeMessage = new String(writeBuf);
+                    mProgressBar.setVisibility(View.VISIBLE);
+                    //mText.setText(writeMessage);
+                    break;
+                case Constants.MESSAGE_READ:
+                    byte[] readBuf = (byte[]) msg.obj;
+                    mDeviceViewModel.clearEntries();
+                    mProgressBar.setVisibility(View.INVISIBLE);
+
+                     //for (int i = 0; i < readBuf.length; ++i) {
+                     //mDeviceViewModel.addData(new Entry(i, readBuf[i]));
+                     //}
+
+
+                    // construct a string from the valid bytes in the buffer
+                    String readMessage = new String(readBuf, 0, msg.arg1);
+                    String[] chartData = readMessage.split(" ");
+                    for (int i = 0; i < chartData.length; ++i) {
+                        Log.d(TAG, "handleMessage: Adding point (" + Integer.toString(i) +", " + Integer.toString(Integer.parseInt(chartData[i])) + ")");
+                        mDeviceViewModel.addData(new Entry(i, Integer.parseInt(chartData[i])));
+                    }
+
+                    mDeviceViewModel.refreshLineData("Message READ");
+
+                    if (parFrag != null) {
+                        parFrag.echoPlotted();
+                    }
+                    //mText.setText("Data received and plotted.");
+                    break;
+                case Constants.MESSAGE_DEVICE_NAME:
+                    // save the connected device's name
+                    String connectedDeviceName = msg.getData().getString(Constants.DEVICE_NAME);
+                    if (this != null) {
+                        //Toast.makeText(mainActivity, "Connected to " + connectedDeviceName,
+                                //Toast.LENGTH_SHORT).show();
+                    }
+                    break;
+            }
+        }
+    };
+
+    private void sendInformation(String information) {
+        // Check that we're actually connected before trying anything
+        if (mBluetoothService.getState() != BluetoothService.STATE_CONNECTED) {
+            Toast.makeText(this, "No device connected", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        // Check that there's actually something to send
+        if (information.length() > 0) {
+            // Get the message bytes and tel the BluetoothService to write
+            byte[] send = information.getBytes();
+            mBluetoothService.write(send);
+
+            // Reset out string buffer to zero and clear the edit text field
+            mOutStringBuffer.setLength(0);
+            //mTestEditText.setText(mOutStringBuffer);
+        }
     }
 
     @Override
@@ -111,7 +285,13 @@ public class MainActivity extends AppCompatActivity implements BluetoothDevicesD
 
 
     @Override
-    public void updateActivity() {
+    public void deviceClick() {
+        mBluetoothService.connect(mDeviceViewModel.getSelected(), false);
+        mProgressBar.setVisibility(View.VISIBLE);
+        updateFragment();
+    }
+
+    private void updateFragment() {
         Fragment currentFragment = getSupportFragmentManager().findFragmentById(R.id.fragment_container);
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         if (currentFragment != null) {
@@ -119,5 +299,10 @@ public class MainActivity extends AppCompatActivity implements BluetoothDevicesD
             fragmentTransaction.attach(currentFragment);
             fragmentTransaction.commit();
         }
+    }
+
+    @Override
+    public void parSendInformation(String information) {
+        sendInformation(information);
     }
 }

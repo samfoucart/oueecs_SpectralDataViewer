@@ -15,6 +15,7 @@ public class DeviceViewModel extends ViewModel {
     private List<Entry> mEntries = new ArrayList<Entry>();
     private LineDataSet mDataSet;
     private LineData mLineData;
+    private Boolean mConnected = false;
 
     public void select(BluetoothDevice device){
         mSelectedDevice = device;
@@ -24,11 +25,21 @@ public class DeviceViewModel extends ViewModel {
         mEntries = new ArrayList<Entry>();
     }
 
+    public void setConnected(Boolean connected){
+        mConnected = connected;
+    }
+
     public void addData(Entry entry) {
         mEntries.add(entry);
 
         // Add entries to the dataset
-        mDataSet = new LineDataSet(mEntries, "Label");
+        //mDataSet = new LineDataSet(mEntries, "Label");
+
+        //mLineData = new LineData(mDataSet);
+    }
+
+    public void refreshLineData(String label) {
+        mDataSet = new LineDataSet(mEntries, label);
 
         mLineData = new LineData(mDataSet);
     }
@@ -43,5 +54,9 @@ public class DeviceViewModel extends ViewModel {
 
     public LineData getLineData() {
         return mLineData;
+    }
+
+    public Boolean getConnected() {
+        return mConnected;
     }
 }

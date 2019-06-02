@@ -51,6 +51,8 @@ public class GraphFragment extends Fragment {
             mChart.setData(mDeviceViewModel.getLineData());
             mChart.invalidate();
             mChart.setVisibility(View.VISIBLE);
+            mChart.setPinchZoom(true);
+            mChart.setMaxVisibleValueCount(1);
         } else {
             mNoGraphText.setVisibility(View.VISIBLE);
             mChart.setVisibility(View.INVISIBLE);

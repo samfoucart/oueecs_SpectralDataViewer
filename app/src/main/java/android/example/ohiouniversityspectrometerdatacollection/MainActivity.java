@@ -2,19 +2,17 @@ package android.example.ohiouniversityspectrometerdatacollection;
 
 import android.arch.lifecycle.ViewModelProviders;
 import android.bluetooth.BluetoothAdapter;
-import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -41,6 +39,7 @@ public class MainActivity extends AppCompatActivity implements BluetoothDevicesD
     private BluetoothService mBluetoothService;
     private DeviceViewModel mDeviceViewModel;
     private StringBuffer mOutStringBuffer;
+    private String mConnectedDevice = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -143,6 +142,7 @@ public class MainActivity extends AppCompatActivity implements BluetoothDevicesD
                     switch (msg.arg1) {
                         case BluetoothService.STATE_CONNECTED:
                             mDeviceViewModel.setConnected(true);
+                            makeToast("Now connected to " + mDeviceViewModel.getSelected().getName());
                             mProgressBar.setVisibility(View.INVISIBLE);
                             updateFragment();
                             break;
@@ -168,21 +168,18 @@ public class MainActivity extends AppCompatActivity implements BluetoothDevicesD
                     //mText.setText(writeMessage);
                     break;
                 case Constants.MESSAGE_READ:
-                    byte[] readBuf = (byte[]) msg.obj;
-                    mDeviceViewModel.clearEntries();
+                    //byte[] readBuf = (byte[]) msg.obj;
+                    String readBuf = (String) msg.obj;
+                    Log.d(TAG, "handleMessage: Clearing Entries");
                     mProgressBar.setVisibility(View.INVISIBLE);
-
-                     //for (int i = 0; i < readBuf.length; ++i) {
-                     //mDeviceViewModel.addData(new Entry(i, readBuf[i]));
-                     //}
-
+                    makeToast("Data Received");
 
                     // construct a string from the valid bytes in the buffer
-                    String readMessage = new String(readBuf, 0, msg.arg1);
-                    String[] chartData = readMessage.split(" ");
+                    //String readMessage = new String(readBuf, 0, msg.arg1);
+                    String[] chartData = readBuf.split(" ");
                     for (int i = 0; i < chartData.length; ++i) {
-                        Log.d(TAG, "handleMessage: Adding point (" + Integer.toString(i) +", " + Integer.toString(Integer.parseInt(chartData[i])) + ")");
-                        mDeviceViewModel.addData(new Entry(i, Integer.parseInt(chartData[i])));
+                        Log.d(TAG, "handleMessage: Adding point (" + Integer.toString(mDeviceViewModel.getNumPoints()) +", " + Float.toString(Float.parseFloat(chartData[i])) + ")");
+                        mDeviceViewModel.addData(new Entry(mDeviceViewModel.getNumPoints(), Float.parseFloat(chartData[i])));
                     }
 
                     mDeviceViewModel.refreshLineData("Message READ");
@@ -194,7 +191,7 @@ public class MainActivity extends AppCompatActivity implements BluetoothDevicesD
                     break;
                 case Constants.MESSAGE_DEVICE_NAME:
                     // save the connected device's name
-                    String connectedDeviceName = msg.getData().getString(Constants.DEVICE_NAME);
+                    mConnectedDevice = msg.getData().getString(Constants.DEVICE_NAME);
                     if (this != null) {
                         //Toast.makeText(mainActivity, "Connected to " + connectedDeviceName,
                                 //Toast.LENGTH_SHORT).show();
@@ -286,8 +283,10 @@ public class MainActivity extends AppCompatActivity implements BluetoothDevicesD
 
     @Override
     public void deviceClick() {
-        mBluetoothService.connect(mDeviceViewModel.getSelected(), false);
-        mProgressBar.setVisibility(View.VISIBLE);
+        if (!mConnectedDevice.equals(mDeviceViewModel.getSelected().getName())) {
+            mBluetoothService.connect(mDeviceViewModel.getSelected(), false);
+            mProgressBar.setVisibility(View.VISIBLE);
+        }
         updateFragment();
     }
 
@@ -303,6 +302,11 @@ public class MainActivity extends AppCompatActivity implements BluetoothDevicesD
 
     @Override
     public void parSendInformation(String information) {
+        mDeviceViewModel.clearEntries();
         sendInformation(information);
+    }
+
+    private void makeToast(String message) {
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
 }

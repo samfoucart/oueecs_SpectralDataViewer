@@ -16,12 +16,14 @@ public class DeviceViewModel extends ViewModel {
     private LineDataSet mDataSet;
     private LineData mLineData;
     private Boolean mConnected = false;
+    private int mNumPoints = 0;
 
     public void select(BluetoothDevice device){
         mSelectedDevice = device;
     }
 
     public void clearEntries() {
+        mNumPoints = 0;
         mEntries = new ArrayList<Entry>();
     }
 
@@ -30,6 +32,7 @@ public class DeviceViewModel extends ViewModel {
     }
 
     public void addData(Entry entry) {
+        mNumPoints++;
         mEntries.add(entry);
 
         // Add entries to the dataset
@@ -43,6 +46,11 @@ public class DeviceViewModel extends ViewModel {
 
         mLineData = new LineData(mDataSet);
     }
+
+    public void resetNumPoints() {
+        mNumPoints = 0;
+    }
+
 
     public BluetoothDevice getSelected() {
         return mSelectedDevice;
@@ -59,4 +67,7 @@ public class DeviceViewModel extends ViewModel {
     public Boolean getConnected() {
         return mConnected;
     }
+
+    public int getNumPoints() { return mNumPoints; }
+
 }

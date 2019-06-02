@@ -1,5 +1,6 @@
 package android.example.ohiouniversityspectrometerdatacollection;
 
+import android.arch.lifecycle.ViewModelProviders;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
@@ -9,10 +10,15 @@ import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.util.UUID;
+
+
+import org.apache.commons.io.IOUtils;
 
 /**
  * This class does all the work for setting up and managing Bluetooth
@@ -39,6 +45,7 @@ public class BluetoothService {
     private final Handler mHandler;
     private ConnectThread mConnectThread;
     private ConnectedThread mConnectedThread;
+    private DeviceViewModel mDeviceViewModel;
     private int mState;
     private int mNewState;
 
@@ -332,11 +339,28 @@ public class BluetoothService {
             // Keep listening to the InputStream while connected
             while (mState == STATE_CONNECTED) {
                 try {
+                    StringBuilder totalStringBuilder = new StringBuilder();
                     // Read from the InputStream
-                    bytes = mmInStream.read(buffer);
+                    Log.d(TAG, "run: mmInStream = " + Integer.toString(mmInStream.available()));
 
+                    while ( (bytes = mmInStream.read(buffer)) == 1024 || bytes == 1008) {
+                        Log.d(TAG, "run: bytes = " + Integer.toString(bytes));
+                        String tmp = new String(buffer, 0, bytes);
+                        totalStringBuilder.append(tmp);
+
+                        Log.d(TAG, "run: bytes = " + Integer.toString(bytes));
+                    }
+                    Log.d(TAG, "run: Trying to read");
+                    String tmp = new String(buffer, 0, bytes);
+                    totalStringBuilder.append(tmp);
+
+                    String totalString = totalStringBuilder.toString();
+
+
+                    Log.d(TAG, "run: String Built");
                     // Send the obtained bytes to the UI Activity
-                    mHandler.obtainMessage(Constants.MESSAGE_READ, bytes, -1, buffer).sendToTarget();
+                    mHandler.obtainMessage(Constants.MESSAGE_READ, totalString.length(), -1, totalString).sendToTarget();
+                    Log.d(TAG, "run: String Sent to activity");
                 } catch (IOException e) {
                     Log.e(TAG, "disconnected", e);
                     connectionLost();

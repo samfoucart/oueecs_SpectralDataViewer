@@ -13,7 +13,8 @@
         android:layout_height="8dp"
         style="@style/Widget.AppCompat.ProgressBar.Horizontal"
         android:visibility="invisible"
-        android:indeterminate="true"/>
+        android:indeterminate="true"
+        android:layout_alignParentTop="true"/>
 
     <FrameLayout
         android:id="@+id/fragment_container"

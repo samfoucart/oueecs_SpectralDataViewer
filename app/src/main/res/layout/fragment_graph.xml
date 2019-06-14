@@ -3,42 +3,68 @@
     android:layout_width="match_parent" android:layout_height="match_parent">
 
 
-    <TextView
-        android:id="@+id/graph_title"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginStart="50dp"
-        android:layout_marginLeft="50dp"
-        android:layout_marginTop="0dp"
-        android:text="title"
-        android:textSize="30sp"
-        android:paddingTop="10dp"
-        android:textStyle="bold"/>
+    <RelativeLayout
+        android:id="@+id/graph_display"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="invisible"
+        android:padding="5dp">
 
-    <TextView
-            android:id="@+id/graph_date"
+        <RelativeLayout
+            android:id="@+id/display_top"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="date"
-            android:textSize="30sp"
             android:layout_alignParentTop="true"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentEnd="true"
-        android:layout_marginRight="50dp"
-        android:layout_marginEnd="50dp"
-            android:paddingTop="10dp"
-        android:textStyle="bold"/>
+            android:layout_centerHorizontal="true">
 
-    <com.github.mikephil.charting.charts.LineChart
-            android:id="@+id/selected_chart"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_margin="20dp"
-            android:visibility="invisible"
-            android:layout_below="@id/graph_title" />
+            <EditText
+                android:id="@+id/graph_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"
+                android:layout_toStartOf="@id/save_graph_button"
+                android:layout_toLeftOf="@id/save_graph_button"
+                android:hint="title"
+                android:paddingTop="10dp"
+                android:singleLine="true"
+                android:textSize="30sp"
+                android:textStyle="bold"
+                android:textAlignment="center"/>
+
+            <TextView
+                android:id="@+id/graph_date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="date"
+                android:textSize="30sp"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true"
+                android:layout_toRightOf="@id/save_graph_button"
+                android:layout_toEndOf="@id/save_graph_button"
+                android:paddingTop="10dp"
+                android:textStyle="bold"
+                android:layout_centerVertical="true"
+                android:textAlignment="center"/>
+
+            <Button
+                android:id="@+id/save_graph_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:text="Save"/>
+
+        </RelativeLayout>
+
+        <com.github.mikephil.charting.charts.LineChart
+                android:id="@+id/selected_chart"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_margin="20dp"
+                android:layout_below="@id/display_top" />
+
+    </RelativeLayout>
 
 
     <TextView

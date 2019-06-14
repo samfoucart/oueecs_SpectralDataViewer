@@ -1,5 +1,7 @@
 package android.example.ohiouniversityspectrometerdatacollection;
 
+
+
 import android.arch.lifecycle.ViewModelProviders;
 import android.bluetooth.BluetoothAdapter;
 import android.content.Intent;
@@ -22,6 +24,8 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.github.mikephil.charting.data.Entry;
+
+import java.util.Date;
 
 public class MainActivity extends AppCompatActivity implements BluetoothDevicesDialogFragment.DeviceDialogListener, SpectrometerSettingsFragment.ParametersInterface {
     private static final String TAG = "MainActivity";
@@ -170,10 +174,12 @@ public class MainActivity extends AppCompatActivity implements BluetoothDevicesD
                 case Constants.MESSAGE_READ:
                     //byte[] readBuf = (byte[]) msg.obj;
                     String readBuf = (String) msg.obj;
+                    mDeviceViewModel.setGraphString(readBuf);
                     Log.d(TAG, "handleMessage: Clearing Entries");
                     mProgressBar.setVisibility(View.INVISIBLE);
                     makeToast("Data Received");
 
+                    /*
                     // construct a string from the valid bytes in the buffer
                     //String readMessage = new String(readBuf, 0, msg.arg1);
                     String[] chartData = readBuf.split(" ");
@@ -181,8 +187,10 @@ public class MainActivity extends AppCompatActivity implements BluetoothDevicesD
                         Log.d(TAG, "handleMessage: Adding point (" + Integer.toString(mDeviceViewModel.getNumPoints()) +", " + Float.toString(Float.parseFloat(chartData[i])) + ")");
                         mDeviceViewModel.addData(new Entry(mDeviceViewModel.getNumPoints(), Float.parseFloat(chartData[i])));
                     }
+                    */
 
                     mDeviceViewModel.refreshLineData("Message READ");
+                    mDeviceViewModel.setDate(new Date());
 
                     if (parFrag != null) {
                         parFrag.echoPlotted();

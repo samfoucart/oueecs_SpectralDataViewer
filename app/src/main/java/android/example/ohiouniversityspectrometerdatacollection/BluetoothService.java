@@ -16,7 +16,6 @@ import java.io.OutputStream;
 import java.util.UUID;
 
 
-import org.apache.commons.io.IOUtils;
 
 /**
  * This class does all the work for setting up and managing Bluetooth

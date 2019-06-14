@@ -8,6 +8,9 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.github.mikephil.charting.charts.LineChart;
@@ -22,6 +25,10 @@ public class GraphFragment extends Fragment {
     private DeviceViewModel mDeviceViewModel;
     private LineChart mChart;
     private TextView mNoGraphText;
+    private RelativeLayout mDisplay;
+    private TextView mDateTextView;
+    private EditText mNameEditText;
+    private Button mSaveButton;
 
 
     @Override
@@ -37,6 +44,20 @@ public class GraphFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_graph, container, false);
         mChart = rootView.findViewById(R.id.selected_chart);
         mNoGraphText = rootView.findViewById(R.id.no_graph_text);
+        mDisplay = rootView.findViewById(R.id.graph_display);
+        mDateTextView = rootView.findViewById(R.id.graph_date);
+        mNameEditText = rootView.findViewById(R.id.graph_title);
+        mSaveButton = rootView.findViewById(R.id.save_graph_button);
+
+        mSaveButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mDeviceViewModel.insert(new SavedGraph(mDeviceViewModel.getGraphString(),
+                        mNameEditText.getText().toString(),
+                        mDeviceViewModel.getDate()));
+
+            }
+        });
 
 
         return rootView;
@@ -50,9 +71,10 @@ public class GraphFragment extends Fragment {
             mNoGraphText.setVisibility(View.INVISIBLE);
             mChart.setData(mDeviceViewModel.getLineData());
             mChart.invalidate();
-            mChart.setVisibility(View.VISIBLE);
+            mDisplay.setVisibility(View.VISIBLE);
             mChart.setPinchZoom(true);
             mChart.setMaxVisibleValueCount(1);
+            mDateTextView.setText(mDeviceViewModel.getDate().toString());
         } else {
             mNoGraphText.setVisibility(View.VISIBLE);
             mChart.setVisibility(View.INVISIBLE);

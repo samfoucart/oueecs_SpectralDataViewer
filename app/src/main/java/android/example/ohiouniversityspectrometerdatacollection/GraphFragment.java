@@ -52,7 +52,7 @@ public class GraphFragment extends Fragment {
         mSaveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mDeviceViewModel.insert(new SavedGraph(mDeviceViewModel.getGraphString(),
+                mDeviceViewModel.insert(new SavedGraph(mDeviceViewModel.getSpectraAndWavelengths(),
                         mNameEditText.getText().toString(),
                         mDeviceViewModel.getDate()));
 

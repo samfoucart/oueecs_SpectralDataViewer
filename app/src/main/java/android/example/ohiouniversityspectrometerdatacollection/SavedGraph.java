@@ -4,6 +4,7 @@ import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.PrimaryKey;
 import android.support.annotation.NonNull;
+import android.widget.GridLayout;
 
 import com.github.mikephil.charting.data.LineData;
 
@@ -16,7 +17,7 @@ public class SavedGraph {
 
     @NonNull
     @ColumnInfo
-    private String mLineData;
+    private SpectraAndWavelengths mLineData;
 
     @ColumnInfo(name = "spectrum_name")
     private String mName;
@@ -25,13 +26,13 @@ public class SavedGraph {
     @ColumnInfo(name = "spectrum_date")
     private Date mDate;
 
-    public SavedGraph(@NonNull String lineData, String name, Date date) {
+    public SavedGraph(@NonNull SpectraAndWavelengths lineData, String name, Date date) {
         this.mLineData = lineData;
         this.mName = name;
         this.mDate = date;
     }
 
-    public String getLineData() {
+    public SpectraAndWavelengths getLineData() {
         return this.mLineData;
     }
 

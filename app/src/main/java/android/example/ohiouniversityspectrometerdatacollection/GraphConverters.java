@@ -17,4 +17,22 @@ public class GraphConverters {
         return date == null ? null : date.getTime();
     }
 
+    @TypeConverter
+    public static String spectraAndWavelengthsToString(SpectraAndWavelengths spectraAndWavelengths) {
+        if (spectraAndWavelengths == null) {
+            return null;
+        } else {
+            return spectraAndWavelengths.dataToString();
+        }
+    }
+
+    @TypeConverter
+    public static SpectraAndWavelengths fromString(String value) {
+        if (value == null) {
+            return null;
+        } else {
+            return new SpectraAndWavelengths(value);
+        }
+    }
+
 }

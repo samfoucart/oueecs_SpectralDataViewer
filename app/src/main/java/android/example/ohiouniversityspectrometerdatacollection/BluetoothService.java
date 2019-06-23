@@ -330,26 +330,21 @@ public class BluetoothService {
 
         public void run() {
             Log.i(TAG, "BEGIN mConnectedThread");
-            byte[] buffer = new byte[1024];
-            int bytes;
+            int readByte;
 
             // Keep listening to the InputStream while connected
             while (mState == STATE_CONNECTED) {
                 try {
                     StringBuilder totalStringBuilder = new StringBuilder();
                     // Read from the InputStream
-                    Log.d(TAG, "run: mmInStream = " + Integer.toString(mmInStream.available()));
-
-                    while ( (bytes = mmInStream.read(buffer)) == 1024 || bytes == 1008) {
-                        Log.d(TAG, "run: bytes = " + Integer.toString(bytes));
-                        String tmp = new String(buffer, 0, bytes);
-                        totalStringBuilder.append(tmp);
-
-                        Log.d(TAG, "run: bytes = " + Integer.toString(bytes));
+                    readByte = mmInStream.read();
+                    while (readByte != 'w') {
+                        char readChar = (char) readByte;
+                        totalStringBuilder.append(readChar);
+                        readByte = mmInStream.read();
                     }
-                    Log.d(TAG, "run: Trying to read");
-                    String tmp = new String(buffer, 0, bytes);
-                    totalStringBuilder.append(tmp);
+
+                    totalStringBuilder.append('w');
 
                     String totalString = totalStringBuilder.toString();
 

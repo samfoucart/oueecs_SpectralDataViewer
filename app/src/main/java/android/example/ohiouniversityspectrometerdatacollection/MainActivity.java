@@ -174,7 +174,7 @@ public class MainActivity extends AppCompatActivity implements BluetoothDevicesD
                 case Constants.MESSAGE_READ:
                     //byte[] readBuf = (byte[]) msg.obj;
                     String readBuf = (String) msg.obj;
-                    mDeviceViewModel.setGraphString(readBuf);
+                    mDeviceViewModel.setSpectraAndWavelengths(new SpectraAndWavelengths(readBuf));
                     Log.d(TAG, "handleMessage: Clearing Entries");
                     mProgressBar.setVisibility(View.INVISIBLE);
                     makeToast("Data Received");

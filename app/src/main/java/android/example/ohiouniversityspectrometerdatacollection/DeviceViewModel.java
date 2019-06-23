@@ -25,7 +25,7 @@ public class DeviceViewModel extends AndroidViewModel implements GraphRepository
     //private LiveData<List<Integer>> mAllIds;
     private LiveData<List<String>> mAllNames;
     private LiveData<List<Date>> mAllDates;
-    private String mGraphString;
+    private SpectraAndWavelengths mSpectraAndWavelengths;
 
     // Device / Currently Plotted Graph
     private BluetoothDevice mSelectedDevice;
@@ -61,8 +61,8 @@ public class DeviceViewModel extends AndroidViewModel implements GraphRepository
         mConnected = connected;
     }
 
-    public void setGraphString (String graphString) {
-        mGraphString = graphString;
+    public void setSpectraAndWavelengths (SpectraAndWavelengths spectraAndWavelengths) {
+        mSpectraAndWavelengths = spectraAndWavelengths;
     }
 
     public void addData(Entry entry) {
@@ -92,7 +92,7 @@ public class DeviceViewModel extends AndroidViewModel implements GraphRepository
     }
 
     public void refreshLineData(String label) {
-        if (mGraphString != null) {
+        if (mSpectraAndWavelengths != null) {
             // construct a string from the valid bytes in the buffer
             //String readMessage = new String(readBuf, 0, msg.arg1);
 
@@ -110,10 +110,11 @@ public class DeviceViewModel extends AndroidViewModel implements GraphRepository
 
             // Create an array of strings by splitting the string of all points, then parse
             // each string in the array as a float and add it to the list
-            String[] chartData = mGraphString.split(" ");
-            for (int i = 0; i < chartData.length; ++i) {
-                Log.d(TAG, "refreshLineData: Adding point (" + Integer.toString(getNumPoints()) + ", " + Float.toString(Float.parseFloat(chartData[i])) + ")");
-                addData(new Entry(getNumPoints(), Float.parseFloat(chartData[i])));
+            for (int i = 0; i < mSpectraAndWavelengths.getSpectraLength()
+                         && i < mSpectraAndWavelengths.getWavelengthsLength(); ++i) {
+
+                addData(new Entry(mSpectraAndWavelengths.getWavelengthAt(i),
+                        mSpectraAndWavelengths.getSpectraAt(i)));
             }
             mDataSet = new LineDataSet(mEntries, label);
             mLineData = new LineData(mDataSet);
@@ -144,8 +145,8 @@ public class DeviceViewModel extends AndroidViewModel implements GraphRepository
         return mConnected;
     }
 
-    public String getGraphString() {
-        return mGraphString;
+    public SpectraAndWavelengths getSpectraAndWavelengths() {
+        return mSpectraAndWavelengths;
     }
 
     public int getNumPoints() { return mNumPoints; }
@@ -167,10 +168,9 @@ public class DeviceViewModel extends AndroidViewModel implements GraphRepository
 
     @Override
     public void onGraphLoaded(SavedGraph savedGraph) {
-        SavedGraph tmp = savedGraph;
-        mGraphString = tmp.getLineData();
-        mName = tmp.getName();
-        mDate = tmp.getDate();
+        mSpectraAndWavelengths = savedGraph.getLineData();
+        mName = savedGraph.getName();
+        mDate = savedGraph.getDate();
 
         refreshLineData("loadGraphFromDate");
     }

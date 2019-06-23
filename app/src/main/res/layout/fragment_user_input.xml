@@ -6,10 +6,14 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="This is where the user will set spectrometer settings"
+        android:text="You are not currently connected to a device. Press the Bluetooth icon in the top right corner to search for available devices."
         android:textSize="30sp"
-        android:layout_centerInParent="true"
-        android:id="@+id/textview"/>
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentTop="true"
+        android:textAlignment="center"
+        android:id="@+id/textview"
+        android:padding="10dp"
+        android:layout_marginTop="100dp"/>
 
     <EditText
         android:id="@+id/test_edit_text"

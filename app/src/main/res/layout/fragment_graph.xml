@@ -29,7 +29,7 @@
                 android:hint="title"
                 android:paddingTop="10dp"
                 android:singleLine="true"
-                android:textSize="30sp"
+                android:textSize="20sp"
                 android:textStyle="bold"
                 android:textAlignment="center"/>
 
@@ -38,7 +38,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="date"
-                android:textSize="30sp"
+                android:textSize="20sp"
                 android:layout_alignParentRight="true"
                 android:layout_alignParentEnd="true"
                 android:layout_toRightOf="@id/save_graph_button"
@@ -53,7 +53,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
-                android:text="Save"/>
+                android:text="Save"
+                android:background="@color/colorPrimary"
+                android:textColor="#FFFFFF"/>
 
         </RelativeLayout>
 

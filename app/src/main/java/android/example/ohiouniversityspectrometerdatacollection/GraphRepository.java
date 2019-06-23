@@ -90,6 +90,7 @@ public class GraphRepository {
         mGraphLoadedCallback.onGraphLoaded(queryResult);
     }
 
+
     private static class getGraphFromDateAsyncTask extends AsyncTask<Date, Void, SavedGraph> {
         private GraphDao mAsyncTaskDao;
         private GraphRepository delegate = null;
@@ -112,5 +113,6 @@ public class GraphRepository {
 
     public interface GraphLoadedCallback {
         void onGraphLoaded(SavedGraph savedGraph);
+
     }
 }

@@ -37,7 +37,7 @@ public class GraphListAdapter extends RecyclerView.Adapter<GraphListAdapter.Grap
 
 
     public void onBindViewHolder(@NonNull GraphViewHolder viewHolder, int i) {
-        if (mDates != null) {
+        if (mDates != null && mNames != null) {
             String currentName = mNames.get(i);
             Date currentDate = mDates.get(i);
 

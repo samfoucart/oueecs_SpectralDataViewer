@@ -13,6 +13,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.github.mikephil.charting.charts.LineChart;
 
@@ -56,11 +57,12 @@ public class GraphFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 if (mDeviceViewModel.getDate() != null) {
-                    mDeviceViewModel.isGraphSaved(mDeviceViewModel.getDate());
 
-                    mDeviceViewModel.insert(new SavedGraph(mDeviceViewModel.getGraphString(),
+                    mDeviceViewModel.insert(new SavedGraph(mDeviceViewModel.getSpectraAndWavelengths(),
                             mNameEditText.getText().toString(),
                             mDeviceViewModel.getDate()));
+
+                    Toast.makeText(getContext(), "Graph Saved", Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -72,11 +74,14 @@ public class GraphFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-        Date tmpDate = mDeviceViewModel.getDate();
-        String day = (String) DateFormat.format("dd", tmpDate);
-        String month = (String) DateFormat.format("MM", tmpDate);
-        String year = (String) DateFormat.format("yyyy", tmpDate);
-        String dateString = month + "/" + day + "/" + year;
+        String dateString = "";
+        if (mDeviceViewModel.getDate() != null) {
+            Date tmpDate = mDeviceViewModel.getDate();
+            String day = (String) DateFormat.format("dd", tmpDate);
+            String month = (String) DateFormat.format("MM", tmpDate);
+            String year = (String) DateFormat.format("yyyy", tmpDate);
+            dateString = month + "/" + day + "/" + year;
+        }
 
         // Set Graph, Date, and Title
         if (mDeviceViewModel.getLineData() != null){

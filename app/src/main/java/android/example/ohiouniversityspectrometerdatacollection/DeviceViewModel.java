@@ -5,6 +5,7 @@ import android.arch.lifecycle.AndroidViewModel;
 import android.arch.lifecycle.LiveData;
 import android.bluetooth.BluetoothDevice;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
@@ -172,6 +173,7 @@ public class DeviceViewModel extends AndroidViewModel implements GraphRepository
         mName = savedGraph.getName();
         mDate = savedGraph.getDate();
 
+        Toast.makeText(getApplication(), "Graph Loaded", Toast.LENGTH_SHORT).show();
         refreshLineData("loadGraphFromDate");
     }
 }

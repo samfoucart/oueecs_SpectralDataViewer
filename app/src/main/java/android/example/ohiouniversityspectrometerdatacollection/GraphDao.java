@@ -25,10 +25,10 @@ public interface GraphDao {
     LiveData<List<Integer>> getAllIds();
     */
 
-    @Query("SELECT spectrum_name FROM graph_table ORDER BY spectrum_date")
+    @Query("SELECT spectrum_name FROM graph_table ORDER BY spectrum_date DESC")
     LiveData<List<String>> getAllNames();
 
-    @Query("SELECT spectrum_date FROM graph_table ORDER BY spectrum_date")
+    @Query("SELECT spectrum_date FROM graph_table ORDER BY spectrum_date DESC")
     LiveData<List<Date>> getAllDates();
 
     @Query("SELECT * FROM graph_table WHERE spectrum_date = :date LIMIT 1")

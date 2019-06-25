@@ -171,10 +171,14 @@ public class MainActivity extends AppCompatActivity implements BluetoothDevicesD
                 case Constants.MESSAGE_READ:
                     //byte[] readBuf = (byte[]) msg.obj;
                     String readBuf = (String) msg.obj;
-                    mDeviceViewModel.setSpectraAndWavelengths(new SpectraAndWavelengths(readBuf));
-                    Log.d(TAG, "handleMessage: Clearing Entries");
-                    mProgressBar.setVisibility(View.INVISIBLE);
-                    makeToast("Data Received");
+                    if (readBuf.equals("calibratedw")) {
+                        mProgressBar.setVisibility(View.INVISIBLE);
+                        makeToast("Graph Calibrated");
+                    } else {
+                        mDeviceViewModel.setSpectraAndWavelengths(new SpectraAndWavelengths(readBuf));
+                        Log.d(TAG, "handleMessage: Clearing Entries");
+                        mProgressBar.setVisibility(View.INVISIBLE);
+                        makeToast("Data Received");
 
                     /*
                     // construct a string from the valid bytes in the buffer
@@ -186,8 +190,9 @@ public class MainActivity extends AppCompatActivity implements BluetoothDevicesD
                     }
                     */
 
-                    mDeviceViewModel.refreshLineData("Message READ");
-                    mDeviceViewModel.setDate(new Date());
+                        mDeviceViewModel.refreshLineData("Message READ");
+                        mDeviceViewModel.setDate(new Date());
+                    }
 
                     //mText.setText("Data received and plotted.");
                     break;

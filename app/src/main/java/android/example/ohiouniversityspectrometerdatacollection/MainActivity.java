@@ -165,9 +165,6 @@ public class MainActivity extends AppCompatActivity implements BluetoothDevicesD
                     }
                     break;
                 case Constants.MESSAGE_WRITE:
-                    byte[] writeBuf = (byte[]) msg.obj;
-                    // construct a string from the buffer
-                    String writeMessage = new String(writeBuf);
                     mProgressBar.setVisibility(View.VISIBLE);
                     //mText.setText(writeMessage);
                     break;
@@ -192,9 +189,6 @@ public class MainActivity extends AppCompatActivity implements BluetoothDevicesD
                     mDeviceViewModel.refreshLineData("Message READ");
                     mDeviceViewModel.setDate(new Date());
 
-                    if (parFrag != null) {
-                        parFrag.echoPlotted();
-                    }
                     //mText.setText("Data received and plotted.");
                     break;
                 case Constants.MESSAGE_DEVICE_NAME:
@@ -209,7 +203,7 @@ public class MainActivity extends AppCompatActivity implements BluetoothDevicesD
         }
     };
 
-    private void sendInformation(String information) {
+    private void sendInformation(float information, boolean isCalibration) {
         // Check that we're actually connected before trying anything
         if (mBluetoothService.getState() != BluetoothService.STATE_CONNECTED) {
             Toast.makeText(this, "No device connected", Toast.LENGTH_SHORT).show();
@@ -217,10 +211,8 @@ public class MainActivity extends AppCompatActivity implements BluetoothDevicesD
         }
 
         // Check that there's actually something to send
-        if (information.length() > 0) {
-            // Get the message bytes and tel the BluetoothService to write
-            byte[] send = information.getBytes();
-            mBluetoothService.write(send);
+        if (information > 0) {
+            mBluetoothService.writeJson(information, isCalibration);
 
             // Reset out string buffer to zero and clear the edit text field
             mOutStringBuffer.setLength(0);
@@ -309,9 +301,9 @@ public class MainActivity extends AppCompatActivity implements BluetoothDevicesD
     }
 
     @Override
-    public void parSendInformation(String information) {
+    public void parSendInformation(float information, boolean isCalibration) {
         mDeviceViewModel.clearEntries();
-        sendInformation(information);
+        sendInformation(information, isCalibration);
     }
 
     private void makeToast(String message) {

@@ -7,12 +7,14 @@ import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.util.JsonWriter;
 import android.util.Log;
 
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.util.UUID;
 
 
@@ -194,6 +196,17 @@ public class BluetoothService {
         r.write(out);
     }
 
+    public void writeJson(float integrationTime, boolean isCalibration) {
+        ConnectedThread r;
+
+        synchronized (this) {
+            if (mState != STATE_CONNECTED) return;
+            r = mConnectedThread;
+        }
+
+        r.writeJson(integrationTime, isCalibration);
+    }
+
     // Indicate that the connection attempt failed and notify the UI Activity
     private void connectionFailed() {
         // Send a failure message back to the Activity
@@ -334,30 +347,36 @@ public class BluetoothService {
 
             // Keep listening to the InputStream while connected
             while (mState == STATE_CONNECTED) {
+
+                StringBuilder totalStringBuilder = new StringBuilder();
+                // Read from the InputStream
                 try {
-                    StringBuilder totalStringBuilder = new StringBuilder();
-                    // Read from the InputStream
                     readByte = mmInStream.read();
-                    while (readByte != 'w') {
-                        char readChar = (char) readByte;
-                        totalStringBuilder.append(readChar);
-                        readByte = mmInStream.read();
-                    }
-
-                    totalStringBuilder.append('w');
-
-                    String totalString = totalStringBuilder.toString();
-
-
-                    Log.d(TAG, "run: String Built");
-                    // Send the obtained bytes to the UI Activity
-                    mHandler.obtainMessage(Constants.MESSAGE_READ, totalString.length(), -1, totalString).sendToTarget();
-                    Log.d(TAG, "run: String Sent to activity");
-                } catch (IOException e) {
-                    Log.e(TAG, "disconnected", e);
+                } catch (IOException e2) {
                     connectionLost();
-                    break;
+                    Log.e(TAG, "run: connection lost", e2);
+                    return;
                 }
+                while (readByte != 'w') {
+                    char readChar = (char) readByte;
+                    totalStringBuilder.append(readChar);
+                    try {
+                        readByte = mmInStream.read();
+                    } catch (IOException e2) {
+                        connectionLost();
+                        Log.e(TAG, "run: connection lost", e2);
+                        return;
+                    }
+                }
+
+                totalStringBuilder.append('w');
+
+                String totalString = totalStringBuilder.toString();
+                Log.d(TAG, "run: String Built");
+                // Send the obtained bytes to the UI Activity
+                mHandler.obtainMessage(Constants.MESSAGE_READ, totalString.length(), -1, totalString).sendToTarget();
+                Log.d(TAG, "run: String Sent to activity");
+
             }
         }
 
@@ -371,6 +390,27 @@ public class BluetoothService {
                 mHandler.obtainMessage(Constants.MESSAGE_WRITE, -1, -1, buffer).sendToTarget();
             } catch (IOException e) {
                 Log.e(TAG, "Exception during write", e);
+            }
+        }
+
+        public void writeJson(float integrationTime, boolean isCalibration) {
+            String message = "{\n  \"integrationTime\": " + Float.toString(integrationTime) + ",\n  \"isCalibration\": " + Boolean.toString(isCalibration) + "\n}";
+            try {
+                /*
+                JsonWriter writer = new JsonWriter(new OutputStreamWriter(mmOutStream, "UTF-8"));
+                writer.setIndent("  ");
+                writer.beginObject();
+                writer.name("integrationTime").value(integrationTime);
+                writer.name("isCalibration").value(isCalibration);
+                writer.endObject();
+                writer.close();
+                */
+                mmOutStream.write(message.getBytes());
+
+                mHandler.obtainMessage(Constants.MESSAGE_WRITE, -1, -1, message).sendToTarget();
+
+            } catch (IOException e) {
+                Log.e(TAG, "writeJson: ", e);
             }
         }
 

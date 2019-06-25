@@ -1,5 +1,9 @@
 package android.example.ohiouniversityspectrometerdatacollection;
 
+import android.util.Log;
+
+import static android.content.ContentValues.TAG;
+
 public class SpectraAndWavelengths {
     private float[] mSpectra;
     private float[] mWavelengths;
@@ -10,11 +14,19 @@ public class SpectraAndWavelengths {
         String wavelengthStrings[] = splitData[1].split(" ");
         mSpectra = new float[spectraStrings.length];
         mWavelengths = new float[wavelengthStrings.length - 1];
-        for (int i = 0; i < spectraStrings.length && !spectraStrings[i].equals("s"); ++i) {
-            mSpectra[i] = Float.parseFloat(spectraStrings[i]);
-        }
-        for (int i = 0; i < wavelengthStrings.length && !wavelengthStrings[i].equals("w"); ++i) {
-            mWavelengths[i] = Float.parseFloat(wavelengthStrings[i]);
+        try {
+            for (int i = 0; i < spectraStrings.length && !spectraStrings[i].equals("s"); ++i) {
+                if (!spectraStrings[i].equals("")) {
+                    mSpectra[i] = Float.parseFloat(spectraStrings[i]);
+                } else {
+                    Log.d(TAG, "SpectraAndWavelengths: point missing");
+                }
+            }
+            for (int i = 0; i < wavelengthStrings.length && !wavelengthStrings[i].equals("w"); ++i) {
+                mWavelengths[i] = Float.parseFloat(wavelengthStrings[i]);
+            }
+        } catch (NumberFormatException e) {
+            Log.e(TAG, "SpectraAndWavelengths: ", e);
         }
     }
 

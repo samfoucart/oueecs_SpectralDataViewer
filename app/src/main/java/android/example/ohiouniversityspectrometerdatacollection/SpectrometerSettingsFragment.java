@@ -20,6 +20,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -34,19 +35,19 @@ public class SpectrometerSettingsFragment extends Fragment{
     private final static int REQUEST_ENABLE_BT = 1;
 
     // Member Fields
-    private BluetoothAdapter mBluetoothAdapter;
-    private BluetoothService mBluetoothService;
+
     private DeviceViewModel mDeviceViewModel;
-    private StringBuffer mOutStringBuffer;
     private ParametersInterface mCallback;
 
     // Layout Views
-    private TextView mText;
-    private EditText mTestEditText;
-    private Button mTestButton;
+    private TextView mNotConnectedText;
+    private EditText mIntegrationTimeEditText;
+    private Button mCalibrationButton;
+    private Button mSpectraButton;
+    private RelativeLayout mUserInput;
 
     public interface ParametersInterface {
-        void parSendInformation(String information);
+        void parSendInformation(float information, boolean isCalibration);
     }
 
 
@@ -73,63 +74,43 @@ public class SpectrometerSettingsFragment extends Fragment{
         View rootView = inflater.inflate(R.layout.fragment_user_input, container, false);
 
         // Set Layout Views
-        mText = rootView.findViewById(R.id.textview);
-        mTestButton = rootView.findViewById(R.id.test_button);
-        mTestEditText = rootView.findViewById(R.id.test_edit_text);
-
-        if (mDeviceViewModel.getSelected() != null){
-            mText.setText(mDeviceViewModel.getSelected().getName() + " is selected.");
-        } else {
-            Log.d(TAG, "onCreateView: Device NULL");
-        }
+        mNotConnectedText = rootView.findViewById(R.id.textview);
+        mCalibrationButton = rootView.findViewById(R.id.calibration_button);
+        mSpectraButton = rootView.findViewById(R.id.get_spectra_button);
+        mIntegrationTimeEditText = rootView.findViewById(R.id.integration_time_edit);
+        mUserInput = rootView.findViewById(R.id.parameters_input);
 
 
         if (mDeviceViewModel.getConnected()) {
-            mTestButton.setVisibility(View.VISIBLE);
-            mTestEditText.setVisibility(View.VISIBLE);
+            mUserInput.setVisibility(View.VISIBLE);
+            mNotConnectedText.setVisibility(View.INVISIBLE);
 
 
-            mTestButton.setOnClickListener(new View.OnClickListener() {
+
+            mCalibrationButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     // Send a message using content of the edit text widget
-                    String information = mTestEditText.getText().toString();
-                    mCallback.parSendInformation(information);
+                    float information = Float.parseFloat(mIntegrationTimeEditText.getText().toString());
+                    mCallback.parSendInformation(information, true);
+                }
+            });
+
+            mSpectraButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    float information = Float.parseFloat(mIntegrationTimeEditText.getText().toString());
+                    mCallback.parSendInformation(information, false);
                 }
             });
 
         } else {
-            mTestButton.setVisibility(View.INVISIBLE);
-            mTestEditText.setVisibility(View.INVISIBLE);
+            mUserInput.setVisibility(View.INVISIBLE);
+            mNotConnectedText.setVisibility(View.VISIBLE);
         }
-
-
-
 
         return rootView;
     }
 
-    public void connectedVisible() {
-        mTestButton.setVisibility(View.VISIBLE);
-        mTestEditText.setVisibility(View.VISIBLE);
-
-        mTestButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Send a message using content of the edit text widget
-                String information = mTestEditText.getText().toString();
-                mCallback.parSendInformation(information);
-            }
-        });
-    }
-
-    public void disconnectedInvisible() {
-        mTestButton.setVisibility(View.INVISIBLE);
-        mTestEditText.setVisibility(View.INVISIBLE);
-    }
-
-    public void echoPlotted() {
-        mText.setText("Data Received and Plotted");
-    }
 
 }

@@ -58,11 +58,17 @@ public class GraphFragment extends Fragment {
             public void onClick(View v) {
                 if (mDeviceViewModel.getDate() != null) {
 
-                    mDeviceViewModel.insert(new SavedGraph(mDeviceViewModel.getSpectraAndWavelengths(),
-                            mNameEditText.getText().toString(),
-                            mDeviceViewModel.getDate()));
+                    if (mDeviceViewModel.getIsSaved()) {
+                        Toast.makeText(getContext(), "Graph Already Saved", Toast.LENGTH_LONG).show();
+                    } else {
+                        mDeviceViewModel.insert(new SavedGraph(mDeviceViewModel.getSpectraAndWavelengths(),
+                                mNameEditText.getText().toString(),
+                                mDeviceViewModel.getDate()));
 
-                    Toast.makeText(getContext(), "Graph Saved", Toast.LENGTH_SHORT).show();
+                        mDeviceViewModel.setIsSaved(true);
+
+                        Toast.makeText(getContext(), "Graph Saved", Toast.LENGTH_SHORT).show();
+                    }
                 }
             }
         });

@@ -37,6 +37,7 @@ public class DeviceViewModel extends AndroidViewModel implements GraphRepository
     private int mNumPoints = 0;
     private String mName;
     private Date mDate;
+    private boolean mIsSaved = false;
 
 
     public DeviceViewModel (Application application) {
@@ -56,6 +57,14 @@ public class DeviceViewModel extends AndroidViewModel implements GraphRepository
     public void clearEntries() {
         mNumPoints = 0;
         mEntries = new ArrayList<Entry>();
+    }
+
+    public void setIsSaved(boolean isSaved) {
+        mIsSaved = isSaved;
+    }
+
+    public boolean getIsSaved() {
+        return mIsSaved;
     }
 
     public void setConnected(Boolean connected){
@@ -172,6 +181,7 @@ public class DeviceViewModel extends AndroidViewModel implements GraphRepository
         mSpectraAndWavelengths = savedGraph.getLineData();
         mName = savedGraph.getName();
         mDate = savedGraph.getDate();
+        mIsSaved = true;
 
         Toast.makeText(getApplication(), "Graph Loaded", Toast.LENGTH_SHORT).show();
         refreshLineData("loadGraphFromDate");

@@ -192,6 +192,7 @@ public class MainActivity extends AppCompatActivity implements BluetoothDevicesD
 
                         mDeviceViewModel.refreshLineData("Message READ");
                         mDeviceViewModel.setDate(new Date());
+                        mDeviceViewModel.setIsSaved(false);
                     }
 
                     //mText.setText("Data received and plotted.");

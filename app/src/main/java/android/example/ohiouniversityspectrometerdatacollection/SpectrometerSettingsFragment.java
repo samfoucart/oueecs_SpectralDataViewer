@@ -91,16 +91,20 @@ public class SpectrometerSettingsFragment extends Fragment{
                 @Override
                 public void onClick(View v) {
                     // Send a message using content of the edit text widget
-                    float information = Float.parseFloat(mIntegrationTimeEditText.getText().toString());
-                    mCallback.parSendInformation(information, true);
+                    if (!mIntegrationTimeEditText.getText().toString().equals("")) {
+                        float information = Float.parseFloat(mIntegrationTimeEditText.getText().toString());
+                        mCallback.parSendInformation(information, true);
+                    }
                 }
             });
 
             mSpectraButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    float information = Float.parseFloat(mIntegrationTimeEditText.getText().toString());
-                    mCallback.parSendInformation(information, false);
+                    if (!mIntegrationTimeEditText.getText().toString().equals("")) {
+                        float information = Float.parseFloat(mIntegrationTimeEditText.getText().toString());
+                        mCallback.parSendInformation(information, false);
+                    }
                 }
             });
 

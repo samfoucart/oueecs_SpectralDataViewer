@@ -171,7 +171,7 @@ public class MainActivity extends AppCompatActivity implements BluetoothDevicesD
                 case Constants.MESSAGE_READ:
                     //byte[] readBuf = (byte[]) msg.obj;
                     String readBuf = (String) msg.obj;
-                    if (readBuf.equals("calibratedw")) {
+                    if (readBuf.equals("calibratedw") || readBuf.equals(" calibratedw")) {
                         mProgressBar.setVisibility(View.INVISIBLE);
                         makeToast("Graph Calibrated");
                     } else {

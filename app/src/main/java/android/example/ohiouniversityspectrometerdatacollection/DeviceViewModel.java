@@ -39,6 +39,9 @@ public class DeviceViewModel extends AndroidViewModel implements GraphRepository
     private Date mDate;
     private boolean mIsSaved = false;
 
+    // Parameters
+    private String mIntegrationTime;
+
 
     public DeviceViewModel (Application application) {
         super(application);
@@ -185,5 +188,13 @@ public class DeviceViewModel extends AndroidViewModel implements GraphRepository
 
         Toast.makeText(getApplication(), "Graph Loaded", Toast.LENGTH_SHORT).show();
         refreshLineData("loadGraphFromDate");
+    }
+
+    public String getIntegrationTime() {
+        return mIntegrationTime;
+    }
+
+    public void setIntegrationTime(String mIntegrationTime) {
+        this.mIntegrationTime = mIntegrationTime;
     }
 }

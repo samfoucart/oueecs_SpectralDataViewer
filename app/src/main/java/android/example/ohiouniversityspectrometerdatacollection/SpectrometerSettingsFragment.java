@@ -80,6 +80,7 @@ public class SpectrometerSettingsFragment extends Fragment{
         mIntegrationTimeEditText = rootView.findViewById(R.id.integration_time_edit);
         mUserInput = rootView.findViewById(R.id.parameters_input);
 
+        mIntegrationTimeEditText.setText(mDeviceViewModel.getIntegrationTime());
 
         if (mDeviceViewModel.getConnected()) {
             mUserInput.setVisibility(View.VISIBLE);
@@ -92,8 +93,8 @@ public class SpectrometerSettingsFragment extends Fragment{
                 public void onClick(View v) {
                     // Send a message using content of the edit text widget
                     if (!mIntegrationTimeEditText.getText().toString().equals("")) {
-                        float information = Float.parseFloat(mIntegrationTimeEditText.getText().toString());
-                        mCallback.parSendInformation(information, "Background");
+                        float integrationTime = Float.parseFloat(mIntegrationTimeEditText.getText().toString());
+                        mCallback.parSendInformation(integrationTime, "Background");
                     }
                 }
             });
@@ -102,8 +103,8 @@ public class SpectrometerSettingsFragment extends Fragment{
                 @Override
                 public void onClick(View v) {
                     if (!mIntegrationTimeEditText.getText().toString().equals("")) {
-                        float information = Float.parseFloat(mIntegrationTimeEditText.getText().toString());
-                        mCallback.parSendInformation(information, "Reference");
+                        float integrationTime = Float.parseFloat(mIntegrationTimeEditText.getText().toString());
+                        mCallback.parSendInformation(integrationTime, "Reference");
                     }
                 }
             });
@@ -116,5 +117,9 @@ public class SpectrometerSettingsFragment extends Fragment{
         return rootView;
     }
 
-
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        mDeviceViewModel.setIntegrationTime(mIntegrationTimeEditText.getText().toString());
+    }
 }

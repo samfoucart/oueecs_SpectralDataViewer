@@ -41,6 +41,7 @@ public class DeviceViewModel extends AndroidViewModel implements GraphRepository
 
     // Parameters
     private String mIntegrationTime;
+    private int mAcquisitionMode = 0;
 
 
     public DeviceViewModel (Application application) {
@@ -196,5 +197,13 @@ public class DeviceViewModel extends AndroidViewModel implements GraphRepository
 
     public void setIntegrationTime(String mIntegrationTime) {
         this.mIntegrationTime = mIntegrationTime;
+    }
+
+    public int getAcquisitionMode() {
+        return mAcquisitionMode;
+    }
+
+    public void setAcquisitionMode(int mAcquisitionMode) {
+        this.mAcquisitionMode = mAcquisitionMode;
     }
 }

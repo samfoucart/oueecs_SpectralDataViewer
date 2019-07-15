@@ -18,16 +18,19 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RelativeLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.github.mikephil.charting.data.Entry;
 
 
-public class SpectrometerSettingsFragment extends Fragment{
+public class SpectrometerSettingsFragment extends Fragment {
     // Debug
     private static final String TAG = "SpectrometerSettings";
 
@@ -45,6 +48,8 @@ public class SpectrometerSettingsFragment extends Fragment{
     private Button mCalibrationButton;
     private Button mSpectraButton;
     private RelativeLayout mUserInput;
+    private Spinner mAcquisitionSpinner;
+    private Button mCollectSampleButton;
 
     public interface ParametersInterface {
         void parSendInformation(float information, String testMode);
@@ -77,8 +82,26 @@ public class SpectrometerSettingsFragment extends Fragment{
         mNotConnectedText = rootView.findViewById(R.id.textview);
         mCalibrationButton = rootView.findViewById(R.id.calibration_button);
         mSpectraButton = rootView.findViewById(R.id.get_spectra_button);
+        mCollectSampleButton = rootView.findViewById(R.id.collect_sample_button);
         mIntegrationTimeEditText = rootView.findViewById(R.id.integration_time_edit);
         mUserInput = rootView.findViewById(R.id.parameters_input);
+        mAcquisitionSpinner = rootView.findViewById(R.id.acquisition_mode_spinner);
+        ArrayAdapter<CharSequence> acquisitionAdapter = ArrayAdapter.createFromResource(getContext(),
+                R.array.acquisition_modes, android.R.layout.simple_spinner_item);
+        acquisitionAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        mAcquisitionSpinner.setAdapter(acquisitionAdapter);
+        mAcquisitionSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                mDeviceViewModel.setAcquisitionMode(position);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+        mAcquisitionSpinner.setSelection(mDeviceViewModel.getAcquisitionMode());
 
         mIntegrationTimeEditText.setText(mDeviceViewModel.getIntegrationTime());
 
@@ -105,6 +128,17 @@ public class SpectrometerSettingsFragment extends Fragment{
                     if (!mIntegrationTimeEditText.getText().toString().equals("")) {
                         float integrationTime = Float.parseFloat(mIntegrationTimeEditText.getText().toString());
                         mCallback.parSendInformation(integrationTime, "Reference");
+                    }
+                }
+            });
+
+            mCollectSampleButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (!mIntegrationTimeEditText.getText().toString().equals("")) {
+                        float integrationTime = Float.parseFloat(mIntegrationTimeEditText.getText().toString());
+                        mCallback.parSendInformation(integrationTime,
+                                mAcquisitionSpinner.getSelectedItem().toString());
                     }
                 }
             });

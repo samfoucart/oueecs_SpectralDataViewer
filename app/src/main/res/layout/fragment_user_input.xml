@@ -13,12 +13,13 @@
         android:textAlignment="center"
         android:id="@+id/textview"
         android:padding="10dp"
-        android:layout_marginTop="100dp"/>
+        android:layout_marginTop="100dp"
+        android:visibility="invisible"/>
 
     <RelativeLayout
         android:id="@+id/parameters_input"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_margin="16dp">
         <RelativeLayout
@@ -28,32 +29,62 @@
             android:layout_centerHorizontal="true"
             android:layout_marginTop="50dp">
 
-            <TextView
-                android:id="@+id/integration_time_text"
+            <RelativeLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/integration_time"
-                android:textStyle="bold"
-                android:textSize="20sp"
-                android:layout_centerVertical="true"/>
+                android:id="@+id/integration_time_layout">
+                <TextView
+                    android:id="@+id/integration_time_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/integration_time"
+                    android:textStyle="bold"
+                    android:textSize="20sp"
+                    android:layout_centerVertical="true"/>
 
-            <EditText
-                android:id="@+id/integration_time_edit"
+                <EditText
+                    android:id="@+id/integration_time_edit"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_toRightOf="@id/integration_time_text"
+                    android:layout_toEndOf="@id/integration_time_text"
+                    android:inputType="numberDecimal"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentRight="true"/>
+            </RelativeLayout>
+            <RelativeLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_toRightOf="@id/integration_time_text"
-                android:layout_toEndOf="@id/integration_time_text"
-                android:inputType="numberDecimal"
-                android:layout_alignParentEnd="true"
-                android:layout_alignParentRight="true"/>
+                android:layout_below="@id/integration_time_layout"
+                android:layout_marginTop="10dp">
+                <TextView
+                    android:id="@+id/acquisition_mode_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Acquisition Mode: "
+                    android:textStyle="bold"
+                    android:textSize="20sp"
+                    android:layout_centerVertical="true" />
+                <Spinner
+                    android:id="@+id/acquisition_mode_spinner"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_toEndOf="@id/acquisition_mode_text"
+                    android:layout_toRightOf="@id/acquisition_mode_text"
+                    android:layout_centerVertical="true"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentRight="true">
+
+                </Spinner>
+            </RelativeLayout>
 
         </RelativeLayout>
+        
 
         <RelativeLayout
             android:id="@+id/parameters_buttons"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/parameters_text"
             android:layout_alignParentBottom="true">
             <Button
                 android:id="@+id/calibration_button"
@@ -66,8 +97,15 @@
                 android:id="@+id/get_spectra_button"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_alignParentBottom="true"
+                android:layout_above="@id/collect_sample_button"
                 android:text="@string/get_spectra"/>
+
+            <Button
+                android:id="@+id/collect_sample_button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:text="Collect Sample"/>
         </RelativeLayout>
 
     </RelativeLayout>

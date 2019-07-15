@@ -25,6 +25,10 @@ import android.widget.Toast;
 
 import com.github.mikephil.charting.data.Entry;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.Date;
 
 public class MainActivity extends AppCompatActivity implements BluetoothDevicesDialogFragment.DeviceDialogListener, SpectrometerSettingsFragment.ParametersInterface {
@@ -170,7 +174,25 @@ public class MainActivity extends AppCompatActivity implements BluetoothDevicesD
                     break;
                 case Constants.MESSAGE_READ:
                     //byte[] readBuf = (byte[]) msg.obj;
-                    String readBuf = (String) msg.obj;
+                    mProgressBar.setVisibility(View.INVISIBLE);
+                    try {
+                        String readBuf = (String) msg.obj;
+                        JSONObject mainObject = new JSONObject(readBuf);
+                        int errorCode = mainObject.getInt("errorCode");
+                        if (errorCode == 0) {
+                            JSONArray spectra = mainObject.getJSONArray("spectra");
+                            JSONArray wavelengths = mainObject.getJSONArray("wavelengths");
+                            mDeviceViewModel.setSpectraAndWavelengths(
+                                    new SpectraAndWavelengths(spectra, wavelengths));
+                            makeToast("Data Received");
+                            mDeviceViewModel.refreshLineData("Message READ");
+                            mDeviceViewModel.setDate(new Date());
+                            mDeviceViewModel.setIsSaved(false);
+                        }
+                    } catch(JSONException e) {
+                        break;
+                    }
+                    /*
                     if (readBuf.equals("calibratedw") || readBuf.equals(" calibratedw")) {
                         mProgressBar.setVisibility(View.INVISIBLE);
                         makeToast("Graph Calibrated");
@@ -188,12 +210,13 @@ public class MainActivity extends AppCompatActivity implements BluetoothDevicesD
                         Log.d(TAG, "handleMessage: Adding point (" + Integer.toString(mDeviceViewModel.getNumPoints()) +", " + Float.toString(Float.parseFloat(chartData[i])) + ")");
                         mDeviceViewModel.addData(new Entry(mDeviceViewModel.getNumPoints(), Float.parseFloat(chartData[i])));
                     }
-                    */
+
 
                         mDeviceViewModel.refreshLineData("Message READ");
                         mDeviceViewModel.setDate(new Date());
                         mDeviceViewModel.setIsSaved(false);
                     }
+                    */
 
                     //mText.setText("Data received and plotted.");
                     break;
@@ -209,7 +232,7 @@ public class MainActivity extends AppCompatActivity implements BluetoothDevicesD
         }
     };
 
-    private void sendInformation(float information, boolean isCalibration) {
+    private void sendInformation(float information, String testMode) {
         // Check that we're actually connected before trying anything
         if (mBluetoothService.getState() != BluetoothService.STATE_CONNECTED) {
             Toast.makeText(this, "No device connected", Toast.LENGTH_SHORT).show();
@@ -218,7 +241,7 @@ public class MainActivity extends AppCompatActivity implements BluetoothDevicesD
 
         // Check that there's actually something to send
         if (information > 0) {
-            mBluetoothService.writeJson(information, isCalibration);
+            mBluetoothService.writeJson(information, testMode);
 
             // Reset out string buffer to zero and clear the edit text field
             mOutStringBuffer.setLength(0);
@@ -307,9 +330,9 @@ public class MainActivity extends AppCompatActivity implements BluetoothDevicesD
     }
 
     @Override
-    public void parSendInformation(float information, boolean isCalibration) {
+    public void parSendInformation(float information, String testMode) {
         mDeviceViewModel.clearEntries();
-        sendInformation(information, isCalibration);
+        sendInformation(information, testMode);
     }
 
     private void makeToast(String message) {

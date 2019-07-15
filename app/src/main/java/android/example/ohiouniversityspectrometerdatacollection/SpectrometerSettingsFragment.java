@@ -47,7 +47,7 @@ public class SpectrometerSettingsFragment extends Fragment{
     private RelativeLayout mUserInput;
 
     public interface ParametersInterface {
-        void parSendInformation(float information, boolean isCalibration);
+        void parSendInformation(float information, String testMode);
     }
 
 
@@ -93,7 +93,7 @@ public class SpectrometerSettingsFragment extends Fragment{
                     // Send a message using content of the edit text widget
                     if (!mIntegrationTimeEditText.getText().toString().equals("")) {
                         float information = Float.parseFloat(mIntegrationTimeEditText.getText().toString());
-                        mCallback.parSendInformation(information, true);
+                        mCallback.parSendInformation(information, "Background");
                     }
                 }
             });
@@ -103,7 +103,7 @@ public class SpectrometerSettingsFragment extends Fragment{
                 public void onClick(View v) {
                     if (!mIntegrationTimeEditText.getText().toString().equals("")) {
                         float information = Float.parseFloat(mIntegrationTimeEditText.getText().toString());
-                        mCallback.parSendInformation(information, false);
+                        mCallback.parSendInformation(information, "Reference");
                     }
                 }
             });

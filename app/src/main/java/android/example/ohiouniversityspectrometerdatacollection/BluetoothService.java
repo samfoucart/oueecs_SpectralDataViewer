@@ -196,7 +196,7 @@ public class BluetoothService {
         r.write(out);
     }
 
-    public void writeJson(float integrationTime, boolean isCalibration) {
+    public void writeJson(float integrationTime, String testMode) {
         ConnectedThread r;
 
         synchronized (this) {
@@ -204,7 +204,7 @@ public class BluetoothService {
             r = mConnectedThread;
         }
 
-        r.writeJson(integrationTime, isCalibration);
+        r.writeJson(integrationTime, testMode);
     }
 
     // Indicate that the connection attempt failed and notify the UI Activity
@@ -357,7 +357,7 @@ public class BluetoothService {
                     Log.e(TAG, "run: connection lost", e2);
                     return;
                 }
-                while (readByte != 'w') {
+                while (readByte != '}') {
                     char readChar = (char) readByte;
                     totalStringBuilder.append(readChar);
                     try {
@@ -369,7 +369,7 @@ public class BluetoothService {
                     }
                 }
 
-                totalStringBuilder.append('w');
+                totalStringBuilder.append('}');
 
                 String totalString = totalStringBuilder.toString();
                 Log.d(TAG, "run: String Built");
@@ -393,8 +393,8 @@ public class BluetoothService {
             }
         }
 
-        public void writeJson(float integrationTime, boolean isCalibration) {
-            String message = "{\n  \"integrationTime\": " + Float.toString(integrationTime) + ",\n  \"isCalibration\": " + Boolean.toString(isCalibration) + "\n}";
+        public void writeJson(float integrationTime, String testMode) {
+            String message = "{\n  \"integrationTime\": " + Float.toString(integrationTime) + ",\n  \"testMode\": \"" + testMode + "\"\n}";
             try {
                 /*
                 JsonWriter writer = new JsonWriter(new OutputStreamWriter(mmOutStream, "UTF-8"));

@@ -2,6 +2,9 @@ package android.example.ohiouniversityspectrometerdatacollection;
 
 import android.util.Log;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+
 import static android.content.ContentValues.TAG;
 
 public class SpectraAndWavelengths {
@@ -27,6 +30,19 @@ public class SpectraAndWavelengths {
             }
         } catch (NumberFormatException e) {
             Log.e(TAG, "SpectraAndWavelengths: ", e);
+        }
+    }
+
+    public SpectraAndWavelengths(JSONArray spectra, JSONArray wavelengths){
+        mSpectra = new float[spectra.length()];
+        mWavelengths = new float[wavelengths.length()];
+        try {
+            for (int i = 0; i < spectra.length() && i < wavelengths.length(); i++) {
+                mSpectra[i] = (float) spectra.getDouble(i);
+                mWavelengths[i] = (float) wavelengths.getDouble(i);
+            }
+        } catch (JSONException e) {
+            Log.d(TAG, "SpectraAndWavelengths: JSONException reading from array");
         }
     }
 

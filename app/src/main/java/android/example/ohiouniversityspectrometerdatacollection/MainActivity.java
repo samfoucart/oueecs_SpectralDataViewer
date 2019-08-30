@@ -188,6 +188,8 @@ public class MainActivity extends AppCompatActivity implements BluetoothDevicesD
                             mDeviceViewModel.refreshLineData("Message READ");
                             mDeviceViewModel.setDate(new Date());
                             mDeviceViewModel.setIsSaved(false);
+                        } else if (errorCode == 2) {
+                            makeToast("Error: No Spectrometer Found");
                         }
                     } catch(JSONException e) {
                         break;
@@ -232,7 +234,7 @@ public class MainActivity extends AppCompatActivity implements BluetoothDevicesD
         }
     };
 
-    private void sendInformation(float information, String testMode) {
+    private void sendInformation(float integrationTime, String testMode, int boxcarWidth, int scansToAverage) {
         // Check that we're actually connected before trying anything
         if (mBluetoothService.getState() != BluetoothService.STATE_CONNECTED) {
             Toast.makeText(this, "No device connected", Toast.LENGTH_SHORT).show();
@@ -240,8 +242,8 @@ public class MainActivity extends AppCompatActivity implements BluetoothDevicesD
         }
 
         // Check that there's actually something to send
-        if (information > 0) {
-            mBluetoothService.writeJson(information, testMode);
+        if (integrationTime > 0) {
+            mBluetoothService.writeJson(integrationTime, testMode, boxcarWidth, scansToAverage);
 
             // Reset out string buffer to zero and clear the edit text field
             mOutStringBuffer.setLength(0);
@@ -330,9 +332,9 @@ public class MainActivity extends AppCompatActivity implements BluetoothDevicesD
     }
 
     @Override
-    public void parSendInformation(float information, String testMode) {
+    public void parSendInformation(float integrationTime, String testMode, int boxcarWidth, int scansToAverage) {
         mDeviceViewModel.clearEntries();
-        sendInformation(information, testMode);
+        sendInformation(integrationTime, testMode, boxcarWidth, scansToAverage);
     }
 
     private void makeToast(String message) {

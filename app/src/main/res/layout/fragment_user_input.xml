@@ -39,6 +39,7 @@
                     android:layout_height="wrap_content"
                     android:text="@string/integration_time"
                     android:textStyle="bold"
+                    android:textColor="@color/colorPrimary"
                     android:textSize="20sp"
                     android:layout_centerVertical="true"/>
 
@@ -50,18 +51,82 @@
                     android:layout_toEndOf="@id/integration_time_text"
                     android:inputType="numberDecimal"
                     android:layout_alignParentEnd="true"
-                    android:layout_alignParentRight="true"/>
+                    android:layout_alignParentRight="true"
+                    android:textAlignment="textEnd"
+                    android:gravity="end"/>
             </RelativeLayout>
+
             <RelativeLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:id="@+id/boxcar_width_layout"
                 android:layout_below="@id/integration_time_layout"
                 android:layout_marginTop="10dp">
+                <TextView
+                    android:id="@+id/boxcar_width_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/boxcar_width"
+                    android:textColor="@color/colorPrimary"
+                    android:textStyle="bold"
+                    android:textSize="20sp"
+                    android:layout_centerVertical="true"/>
+
+                <EditText
+                    android:id="@+id/boxcar_width_edit"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_toRightOf="@id/boxcar_width_text"
+                    android:layout_toEndOf="@id/boxcar_width_text"
+                    android:text="1"
+                    android:inputType="number"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentRight="true"
+                    android:textAlignment="textEnd"
+                    android:gravity="end"/>
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/scans_average_layout"
+                android:layout_below="@id/boxcar_width_layout"
+                android:layout_marginTop="10dp">
+                <TextView
+                    android:id="@+id/scans_average_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/scans_to_average"
+                    android:textColor="@color/colorPrimary"
+                    android:textStyle="bold"
+                    android:textSize="20sp"
+                    android:layout_centerVertical="true"/>
+
+                <EditText
+                    android:id="@+id/scans_average_edit"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_toRightOf="@id/scans_average_text"
+                    android:layout_toEndOf="@id/scans_average_text"
+                    android:inputType="number"
+                    android:text="1"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentRight="true"
+                    android:textAlignment="textEnd"
+                    android:gravity="end"/>
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/scans_average_layout"
+                android:layout_marginTop="15dp">
                 <TextView
                     android:id="@+id/acquisition_mode_text"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Acquisition Mode: "
+                    android:text="@string/acquisition_mode"
+                    android:textColor="@color/colorPrimary"
                     android:textStyle="bold"
                     android:textSize="20sp"
                     android:layout_centerVertical="true" />
@@ -73,7 +138,9 @@
                     android:layout_toRightOf="@id/acquisition_mode_text"
                     android:layout_centerVertical="true"
                     android:layout_alignParentEnd="true"
-                    android:layout_alignParentRight="true">
+                    android:layout_alignParentRight="true"
+                    android:textAlignment="textEnd"
+                    android:gravity="end">
 
                 </Spinner>
             </RelativeLayout>

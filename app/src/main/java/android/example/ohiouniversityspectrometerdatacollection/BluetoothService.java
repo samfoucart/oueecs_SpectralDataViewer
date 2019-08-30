@@ -196,7 +196,7 @@ public class BluetoothService {
         r.write(out);
     }
 
-    public void writeJson(float integrationTime, String testMode) {
+    public void writeJson(float integrationTime, String testMode, int boxcarWidth, int scansToAverage) {
         ConnectedThread r;
 
         synchronized (this) {
@@ -204,7 +204,7 @@ public class BluetoothService {
             r = mConnectedThread;
         }
 
-        r.writeJson(integrationTime, testMode);
+        r.writeJson(integrationTime, testMode, boxcarWidth, scansToAverage);
     }
 
     // Indicate that the connection attempt failed and notify the UI Activity
@@ -393,8 +393,11 @@ public class BluetoothService {
             }
         }
 
-        public void writeJson(float integrationTime, String testMode) {
-            String message = "{\n  \"integrationTime\": " + Float.toString(integrationTime) + ",\n  \"testMode\": \"" + testMode + "\"\n}";
+        public void writeJson(float integrationTime, String testMode, int boxcarWidth, int scansToAverage) {
+            String message = "{\n  \"integrationTime\": " + Float.toString(integrationTime) +
+                                ",\n  \"testMode\": \"" + testMode +
+                                "\",\n  \"boxcarWidth\": " + boxcarWidth +
+                                 ",\n  \"scansToAverage\": " + scansToAverage + "\n}";
             try {
                 /*
                 JsonWriter writer = new JsonWriter(new OutputStreamWriter(mmOutStream, "UTF-8"));

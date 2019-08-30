@@ -42,6 +42,8 @@ public class DeviceViewModel extends AndroidViewModel implements GraphRepository
     // Parameters
     private String mIntegrationTime;
     private int mAcquisitionMode = 0;
+    private String mBoxcarWidth = "1";
+    private String mScansToAverage = "1";
 
 
     public DeviceViewModel (Application application) {
@@ -205,5 +207,21 @@ public class DeviceViewModel extends AndroidViewModel implements GraphRepository
 
     public void setAcquisitionMode(int mAcquisitionMode) {
         this.mAcquisitionMode = mAcquisitionMode;
+    }
+
+    public String getBoxcarWidth() {
+        return mBoxcarWidth;
+    }
+
+    public void setBoxcarWidth(String mBoxcarWidth) {
+        this.mBoxcarWidth = mBoxcarWidth;
+    }
+
+    public String getScansToAverage() {
+        return mScansToAverage;
+    }
+
+    public void setScansToAverage(String mScansToAverage) {
+        this.mScansToAverage = mScansToAverage;
     }
 }

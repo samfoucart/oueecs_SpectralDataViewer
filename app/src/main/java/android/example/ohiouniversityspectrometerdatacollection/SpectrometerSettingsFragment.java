@@ -45,6 +45,8 @@ public class SpectrometerSettingsFragment extends Fragment {
     // Layout Views
     private TextView mNotConnectedText;
     private EditText mIntegrationTimeEditText;
+    private EditText mBoxcarWidthEditText;
+    private EditText mScansAverageEditText;
     private Button mCalibrationButton;
     private Button mSpectraButton;
     private RelativeLayout mUserInput;
@@ -52,7 +54,8 @@ public class SpectrometerSettingsFragment extends Fragment {
     private Button mCollectSampleButton;
 
     public interface ParametersInterface {
-        void parSendInformation(float information, String testMode);
+        void parSendInformation(float integrationTime, String testMode,
+                                int boxcarWidth, int scansToAverage);
     }
 
 
@@ -84,6 +87,8 @@ public class SpectrometerSettingsFragment extends Fragment {
         mSpectraButton = rootView.findViewById(R.id.get_spectra_button);
         mCollectSampleButton = rootView.findViewById(R.id.collect_sample_button);
         mIntegrationTimeEditText = rootView.findViewById(R.id.integration_time_edit);
+        mBoxcarWidthEditText = rootView.findViewById(R.id.boxcar_width_edit);
+        mScansAverageEditText = rootView.findViewById(R.id.scans_average_edit);
         mUserInput = rootView.findViewById(R.id.parameters_input);
         mAcquisitionSpinner = rootView.findViewById(R.id.acquisition_mode_spinner);
         ArrayAdapter<CharSequence> acquisitionAdapter = ArrayAdapter.createFromResource(getContext(),
@@ -104,6 +109,8 @@ public class SpectrometerSettingsFragment extends Fragment {
         mAcquisitionSpinner.setSelection(mDeviceViewModel.getAcquisitionMode());
 
         mIntegrationTimeEditText.setText(mDeviceViewModel.getIntegrationTime());
+        mBoxcarWidthEditText.setText(mDeviceViewModel.getBoxcarWidth());
+        mScansAverageEditText.setText(mDeviceViewModel.getScansToAverage());
 
         if (mDeviceViewModel.getConnected()) {
             mUserInput.setVisibility(View.VISIBLE);
@@ -115,9 +122,12 @@ public class SpectrometerSettingsFragment extends Fragment {
                 @Override
                 public void onClick(View v) {
                     // Send a message using content of the edit text widget
-                    if (!mIntegrationTimeEditText.getText().toString().equals("")) {
+                    if (areParametersValid()) {
                         float integrationTime = Float.parseFloat(mIntegrationTimeEditText.getText().toString());
-                        mCallback.parSendInformation(integrationTime, "Background");
+                        int boxcarWidth = Integer.parseInt(mBoxcarWidthEditText.getText().toString());
+                        int scansToAverage = Integer.parseInt(mScansAverageEditText.getText().toString());
+                        mCallback.parSendInformation(integrationTime, "Background",
+                                boxcarWidth, scansToAverage);
                     }
                 }
             });
@@ -125,9 +135,12 @@ public class SpectrometerSettingsFragment extends Fragment {
             mSpectraButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (!mIntegrationTimeEditText.getText().toString().equals("")) {
+                    if (areParametersValid()) {
                         float integrationTime = Float.parseFloat(mIntegrationTimeEditText.getText().toString());
-                        mCallback.parSendInformation(integrationTime, "Reference");
+                        int boxcarWidth = Integer.parseInt(mBoxcarWidthEditText.getText().toString());
+                        int scansToAverage = Integer.parseInt(mScansAverageEditText.getText().toString());
+                        mCallback.parSendInformation(integrationTime, "Reference",
+                                boxcarWidth, scansToAverage);
                     }
                 }
             });
@@ -135,10 +148,13 @@ public class SpectrometerSettingsFragment extends Fragment {
             mCollectSampleButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (!mIntegrationTimeEditText.getText().toString().equals("")) {
+                    if (areParametersValid()) {
                         float integrationTime = Float.parseFloat(mIntegrationTimeEditText.getText().toString());
+                        int boxcarWidth = Integer.parseInt(mBoxcarWidthEditText.getText().toString());
+                        int scansToAverage = Integer.parseInt(mScansAverageEditText.getText().toString());
                         mCallback.parSendInformation(integrationTime,
-                                mAcquisitionSpinner.getSelectedItem().toString());
+                                mAcquisitionSpinner.getSelectedItem().toString(),
+                                boxcarWidth, scansToAverage);
                     }
                 }
             });
@@ -155,5 +171,30 @@ public class SpectrometerSettingsFragment extends Fragment {
     public void onDestroy() {
         super.onDestroy();
         mDeviceViewModel.setIntegrationTime(mIntegrationTimeEditText.getText().toString());
+        mDeviceViewModel.setBoxcarWidth(mBoxcarWidthEditText.getText().toString());
+        mDeviceViewModel.setScansToAverage(mScansAverageEditText.getText().toString());
+    }
+
+    private boolean areParametersValid() {
+
+        if (mIntegrationTimeEditText.getText().toString().equals("")) {
+            Toast.makeText(getContext(),
+                    "Integration Time Empty", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        if (Integer.parseInt(mBoxcarWidthEditText.getText().toString()) < 1 ||
+                Integer.parseInt(mBoxcarWidthEditText.getText().toString()) > 10) {
+            Toast.makeText(getContext(),
+                    "Boxcar width must be between 1 and 10", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        if (Integer.parseInt(mScansAverageEditText.getText().toString()) < 1 ||
+                Integer.parseInt(mScansAverageEditText.getText().toString()) > 10) {
+            Toast.makeText(getContext(),
+                    "Scans to average must be between 1 and 10", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+
+        return true;
     }
 }

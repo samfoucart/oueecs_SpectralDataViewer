@@ -3,7 +3,7 @@ This app is an Android app used for collecting data from Ocean Optics USB2000 sp
 
 # Usage
 Here is a user manual of the application that details compiling, installing, and using the application:
-![User Manual](/Spectral_Data_Viewer_Manual.pdf "Spectral Data Viewer Manual")
+[User Manual](/Spectral_Data_Viewer_Manual.pdf "Spectral Data Viewer Manual")
 
 # Screenshots/Demos
 ## [EARLY Youtube Demonstration](https://www.youtube.com/watch?v=PTfK9BFuKY0)
@@ -13,3 +13,11 @@ Here is a user manual of the application that details compiling, installing, and
 ![Photo of App Plotting Unzoomed](/app-spectra.png "Photo of App Plotting Unzoomed")
 ### Plotting Zoomed
 ![Photo of App Plotting Zoomed](/zoomed-spectra.png "Photo of App Plotting Zoomed")
+### Bluetooth Connection
+![List of Available Bluetooth Connections](/Connection.png "List of available Bluetooth Connections")
+### File Viewer
+![List of Files](/Files.png "List of Saved Files")
+### Toy Graph
+![Toy Graph](/Graph.png "Toy Graph")
+
+
